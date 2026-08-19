@@ -197,6 +197,34 @@ function sansCadratin(html, ou) {
   return html;
 }
 
+// Le studio écrit en inclusif. Le féminin employé comme générique se rattrape
+// mal à la relecture, parce qu'il est correct grammaticalement : « tu es
+// prévenue » ne saute pas aux yeux. La construction le refuse donc.
+//
+// Le contrôle ne porte que sur les pages de type « document » et qu'en français,
+// et c'est délibéré. L'accueil raconte une rencontre avec une enseignante
+// réelle : le féminin y est juste, et un contrôle aveugle crierait sur une
+// phrase correcte. Une page juridique, elle, ne s'adresse jamais qu'à un lectorat
+// générique, donc toute marque de féminin y est une faute d'inclusivité.
+//
+// La liste est volontairement courte. « professionnelle » en est absent exprès :
+// c'est aussi un adjectif qui s'accorde légitimement (« sa pratique
+// professionnelle »), et un contrôle qui crie pour rien est un contrôle qu'on
+// finit par désactiver. Même raison pour « inscrite » (« la date inscrite »).
+const FEMININ_GENERIQUE = ['enseignante', 'enseignantes', 'prévenue', 'utilisatrice', 'utilisatrices', 'consommatrice'];
+
+function sansFemininGenerique(html, ou) {
+  for (const forme of FEMININ_GENERIQUE) {
+    const motif = new RegExp(`[^\\p{L}·]${forme}[^\\p{L}·]`, 'iu');
+    const trouve = html.match(motif);
+    if (trouve) {
+      const ligne = html.split('\n').find((l) => motif.test(l)).trim();
+      throw new Error(`Féminin employé comme générique dans « ${ou} » : « ${forme} ». Écris la forme inclusive. Ligne : ${ligne}`);
+    }
+  }
+  return html;
+}
+
 function rendu(page, langue, metas) {
   const meta = metas[page];
   if (!meta) throw new Error(`Métadonnées manquantes pour « ${page} » en ${langue.code}.`);
@@ -238,7 +266,11 @@ function rendu(page, langue, metas) {
   }
   const restants = html.match(/\{\{[a-zA-Z][a-zA-Z0-9:_-]*\}\}/g);
   if (restants) throw new Error(`Marqueurs non remplacés : ${[...new Set(restants)].join(', ')}`);
-  return sansCadratin(html.replace(/\n{3,}/g, '\n\n'), `${page} en ${langue.code}`);
+  const propre = sansCadratin(html.replace(/\n{3,}/g, '\n\n'), `${page} en ${langue.code}`);
+  if (meta.gabarit === 'document' && langue.code === 'fr') {
+    return sansFemininGenerique(propre, `${page} en ${langue.code}`);
+  }
+  return propre;
 }
 
 // ── Génération ─────────────────────────────────────────────────────────────
