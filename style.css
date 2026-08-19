@@ -216,10 +216,10 @@ img { max-width: 100%; height: auto; }
 .etapes h3 { margin: 6px 0 4px; font-size: 19px; font-weight: 800; }
 .etapes p { margin: 0; color: var(--encre-douce); }
 
-.grille-six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
-.grille-six .carte { margin: 0; }
-.grille-six h3 { margin: 14px 0 6px; font-size: 17px; font-weight: 800; font-family: var(--titre); }
-.grille-six p { margin: 0; font-size: 15px; color: var(--encre-douce); }
+.grille-fonctions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+.grille-fonctions .carte { margin: 0; }
+.grille-fonctions h3 { margin: 14px 0 6px; font-size: 17px; font-weight: 800; font-family: var(--titre); }
+.grille-fonctions p { margin: 0; font-size: 15px; color: var(--encre-douce); }
 
 /* Le prix : un seul chiffre, gros, et ce qu'il contient juste en dessous. */
 .prix { text-align: center; padding: 32px 24px; }
@@ -265,8 +265,8 @@ img { max-width: 100%; height: auto; }
   .barre nav { display: none; }
   .barre { margin-bottom: 28px; }
   .bande-preuves { grid-template-columns: 1fr 1fr; text-align: left; font-size: 13px; }
-  .grille-six { grid-template-columns: 1fr; }
-  .grille-six .carte { text-align: center; }
+  .grille-fonctions { grid-template-columns: 1fr; }
+  .grille-fonctions .carte { text-align: center; }
   .etapes li { gap: 14px; padding: 20px; }
   .badges { justify-content: center; }
   .hero-texte .hero-sous { margin-left: auto; margin-right: auto; font-size: 17px; }
@@ -295,3 +295,162 @@ img { max-width: 100%; height: auto; }
   .badge { width: 100%; justify-content: center; }
   .barre-collante .badge { width: auto; }
 }
+
+/* ── Leçons, avis, fonctionnalités ──────────────────────────────────────────
+   Ajouté le 19/08/2026 : la génération de leçons est la deuxième promesse du
+   produit, et elle mérite un bloc à elle. Les avis sont ceux de vraies
+   enseignantes, cités mot pour mot, donc au vouvoiement de leurs propres mots. */
+
+.phare {
+  background: var(--surface); border-radius: 24px; padding: 32px;
+  box-shadow: var(--ombre-haute); border-top: 4px solid transparent;
+  border-image: var(--action) 1; border-image-slice: 1;
+  border-width: 4px 0 0 0; border-style: solid;
+}
+.phare-titre {
+  font-family: var(--titre); font-weight: 800; font-size: 22px;
+  margin: 0 0 12px; letter-spacing: -0.01em;
+}
+.phare p { margin: 0 0 12px; }
+.phare p:last-child { margin-bottom: 0; }
+
+/* Huit fonctionnalités : deux colonnes et une carte à icône latérale, parce que
+   huit cartes empilées à la verticale font un mur qu'on ne lit pas. */
+.grille-fonctions { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 16px 0; }
+.grille-fonctions .carte { margin: 0; padding: 20px; }
+.carte-plate { display: flex; gap: 16px; align-items: flex-start; }
+.carte-plate .tuile { flex: 0 0 40px; width: 40px; height: 40px; border-radius: 14px; }
+.carte-plate .tuile svg { width: 21px; height: 21px; }
+.carte-plate h3 { margin: 0 0 4px; font-size: 16px; font-weight: 800; font-family: var(--titre); }
+.carte-plate p { margin: 0; font-size: 15px; color: var(--encre-douce); }
+
+.avis { margin: 0; display: flex; flex-direction: column; justify-content: space-between; }
+.avis blockquote {
+  margin: 0 0 16px; font-size: 16px; quotes: "\00AB\00A0" "\00A0\00BB";
+}
+.avis blockquote::before { content: open-quote; color: var(--miel); font-weight: 700; }
+.avis blockquote::after { content: close-quote; color: var(--miel); font-weight: 700; }
+.avis figcaption { display: flex; flex-direction: column; font-size: 14px; }
+.avis figcaption strong { font-family: var(--titre); font-weight: 800; font-size: 16px; }
+.avis figcaption span { color: var(--encre-douce); }
+
+/* ── Passe mobile ───────────────────────────────────────────────────────────
+   Plus de la moitié du trafic arrivera d'un téléphone, donc c'est le cas de
+   référence et non une adaptation. Ce bloc vient après les autres et gagne. */
+
+html { -webkit-text-size-adjust: 100%; }
+a, summary, .badge, .bouton-barre { -webkit-tap-highlight-color: rgba(255, 122, 89, 0.18); }
+/* Les titres cassent leurs lignes de façon équilibrée plutôt qu'en laissant un
+   mot seul en dernière ligne, ce qui se voit surtout sur une colonne étroite. */
+h1, h2, h3, .phare-titre { text-wrap: balance; }
+.hero-sous, .titre-section p { text-wrap: pretty; }
+
+@media (max-width: 900px) {
+  .grille-fonctions { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 760px) {
+  /* Les sections respirent moins : sur un téléphone, 56 px de marge de titre
+     obligent à défiler pour rien. */
+  .titre-section { margin: 40px 0 4px; }
+  .titre-section h2 { font-size: 24px; }
+  .titre-section p { font-size: 16px; }
+  .hero-texte h1 { font-size: 31px; }
+
+  /* La bande de réassurance passe en liste alignée à gauche : quatre phrases
+     centrées sur deux colonnes se lisaient comme un nuage de mots. */
+  .bande-preuves {
+    grid-template-columns: 1fr; text-align: left; gap: 10px;
+    padding: 18px 20px; margin: 24px 0 4px; font-size: 14px;
+  }
+  .bande-preuves li { position: relative; padding-left: 24px; }
+  .bande-preuves li::before {
+    content: ""; position: absolute; left: 2px; top: 6px;
+    width: 11px; height: 6px; border-left: 2.5px solid var(--vert);
+    border-bottom: 2.5px solid var(--vert); transform: rotate(-45deg);
+  }
+
+  .phare { padding: 24px; }
+  .phare-titre { font-size: 20px; }
+
+  /* La carte à icône latérale reste latérale sur téléphone : c'est justement
+     là qu'elle fait gagner de la hauteur. */
+  .grille-fonctions .carte { padding: 18px; }
+  .carte-plate { text-align: left; }
+  .carte-plate .tuile { margin: 0; }
+
+  .avis { text-align: left; }
+  .avis blockquote { font-size: 15px; }
+
+  /* Cibles tactiles : 44 px minimum, y compris pour ouvrir une question. */
+  .questions { padding: 4px 18px; }
+  .questions summary { padding: 16px 34px 16px 0; min-height: 44px; }
+  .questions summary::after { top: 22px; }
+  .questions details[open] summary::after { top: 25px; }
+  .barre nav a { padding: 8px 0; }
+
+  .prix { padding: 26px 20px; }
+  .bandeau { padding: 30px 22px; }
+  .bandeau h2 { font-size: 23px; }
+  section, .carte { padding: 20px; }
+  .duo { gap: 12px; }
+  .appui { font-size: 16px; }
+}
+
+@media (max-width: 460px) {
+  body { padding-left: 14px; padding-right: 14px; }
+  .hero-texte h1 { font-size: 28px; }
+  /* Deux boutons pleine largeur empilés, pouce sur l'un ou sur l'autre. */
+  .badges { flex-direction: column; }
+  .badge { width: 100%; justify-content: flex-start; padding-left: 22px; }
+  .barre-collante { flex-direction: row; }
+  .barre-collante .badge { width: auto; justify-content: center; padding-left: 14px; }
+}
+
+/* ── Correctifs mesurés dans un navigateur ──────────────────────────────────
+   1. `.hero-texte p` est plus spécifique que `.sur-titre` : le surtitre restait
+      à 19 px malgré les règles mobiles. Il faut donc la même spécificité.
+   2. Sur téléphone, la mascotte passait AVANT le titre (`order: -1`), ce qui
+      poussait les deux boutons derrière la barre collante. Le texte d'abord,
+      l'image ensuite : la promesse et l'action tiennent dans le premier écran. */
+
+.hero-texte .sur-titre {
+  font-family: var(--titre); font-weight: 800; font-size: 14px;
+  letter-spacing: 0.04em; text-transform: uppercase; line-height: 1.3;
+  background: var(--action); -webkit-background-clip: text; background-clip: text;
+  color: transparent; margin: 0 0 10px; max-width: none;
+}
+
+@media (max-width: 760px) {
+  .hero { display: flex; flex-direction: column; }
+  .hero-image { order: 2; margin-top: 4px; }
+  .hero-texte { order: 1; }
+  .hero-texte .sur-titre { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 8px; }
+  .hero-image img { max-width: 150px; }
+}
+
+
+/* Cibles tactiles du pied : les liens légaux faisaient 22 px de haut, moitié de
+   la norme de 44 px. Ce sont les liens qu'une examinatrice de store va chercher
+   au doigt, donc ils doivent être confortables. */
+@media (max-width: 760px) {
+  .pied-large nav { gap: 2px 16px; }
+  .pied-large nav a { display: inline-block; padding: 11px 4px; }
+  a.marque { padding: 5px 0; }
+}
+
+@media (max-width: 460px) {
+  .hero-texte .sur-titre { font-size: 12px; letter-spacing: 0.05em; }
+}
+
+/* Même piège de spécificité que le surtitre : `.grille-fonctions .carte` (deux
+   classes) battait `.carte-plate` (une seule), donc le texte restait centré à
+   côté d'une icône alignée à gauche. */
+@media (max-width: 760px) {
+  .grille-fonctions .carte-plate { text-align: left; }
+}
+
+/* Troisième fois le même piège : `.trio .carte` (deux classes) battait `.avis`
+   (une seule), donc les citations restaient centrées. Une citation longue se
+   lit mieux alignée à gauche. */
+.trio .avis { text-align: left; }
