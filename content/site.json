@@ -17,7 +17,7 @@
   "app": {
     "categorie": "EducationalApplication",
     "plateformes": ["iOS", "Android"],
-    "prix": "59",
+    "prix": "59.99",
     "devise": "EUR",
     "periode": "P1Y",
     "essai": "P1M",

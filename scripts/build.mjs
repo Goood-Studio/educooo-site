@@ -319,7 +319,7 @@ for (const langue of languesPresentes) {
   <p class="date">Ça arrive. Rien de cassé.</p>
 </header>
 <section class="centre">
-  <img src="/assets/img/nuage-salut.png" alt="" width="180" height="180" loading="lazy">
+  <img src="/assets/img/nuage-salut.webp" alt="" width="360" height="360" loading="lazy">
   <ul class="liste-plate">
 ${liens}
   </ul>
