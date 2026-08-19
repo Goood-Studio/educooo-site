@@ -1,0 +1,317 @@
+/**
+ * Générateur du site educooo.com.
+ *
+ * Principe : le contenu est du HTML lisible dans content/<langue>/, le gabarit
+ * reprend la main sur tout ce qui est répétitif et facile à rater — canonical,
+ * hreflang, JSON-LD, navigation, pied de page, sitemap. Une page ne peut donc
+ * pas partir en ligne sans son SEO.
+ *
+ * La langue racine (fr) est servie depuis / pour que les URL déjà déclarées aux
+ * stores restent valables. Les autres langues vivent sous /nl et /en, et ne sont
+ * générées que si leur dossier de contenu existe : pas de page vide indexée.
+ */
+
+import { readFileSync, writeFileSync, mkdirSync, cpSync, existsSync, rmSync, readdirSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const RACINE = join(dirname(fileURLToPath(import.meta.url)), '..');
+const SORTIE = join(RACINE, 'dist');
+
+const site = JSON.parse(readFileSync(join(RACINE, 'content/site.json'), 'utf8'));
+const gabarit = readFileSync(join(RACINE, 'layouts/base.html'), 'utf8');
+
+const echappe = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+
+/** Les langues réellement traduites, c'est-à-dire celles qui ont un dossier. */
+const languesPresentes = Object.entries(site.langues)
+  .filter(([code]) => existsSync(join(RACINE, 'content', code, 'meta.json')))
+  .map(([code, conf]) => ({ code, ...conf }));
+
+if (!languesPresentes.some((l) => l.code === site.langueRacine)) {
+  throw new Error(`La langue racine « ${site.langueRacine} » n'a pas de contenu.`);
+}
+
+/** Chemin public d'une page dans une langue, toujours avec un / final. */
+function chemin(langue, page) {
+  const slug = langue.slugs[page];
+  if (page === 'accueil') return `${langue.prefixe}/`;
+  return `${langue.prefixe}/${slug}/`;
+}
+
+const OG_LOCALE = { fr: 'fr_BE', nl: 'nl_BE', en: 'en_GB' };
+
+function balisesHreflang(page) {
+  if (languesPresentes.length < 2) return '';
+  const lignes = languesPresentes.map((l) =>
+    `<link rel="alternate" hreflang="${l.hreflang}" href="${site.domaine}${chemin(l, page)}">`);
+  const defaut = languesPresentes.find((l) => l.defaut) ?? languesPresentes[0];
+  lignes.push(`<link rel="alternate" hreflang="x-default" href="${site.domaine}${chemin(defaut, page)}">`);
+  return lignes.join('\n');
+}
+
+/** Données structurées. L'éditeur partout, l'application sur l'accueil. */
+function jsonld(page, langue, meta) {
+  const e = site.editeur;
+  const organisation = {
+    '@type': 'Organization',
+    name: e.denomination,
+    url: site.domaine,
+    email: e.email,
+    telephone: e.telephone,
+    address: {
+      '@type': 'PostalAddress',
+      streetAddress: e.rue,
+      postalCode: e.codePostal,
+      addressLocality: e.ville,
+      addressCountry: e.pays,
+    },
+  };
+
+  const blocs = [organisation];
+
+  if (page === 'accueil') {
+    blocs.push({
+      '@type': 'SoftwareApplication',
+      name: site.nom,
+      applicationCategory: site.app.categorie,
+      operatingSystem: site.app.plateformes.join(', '),
+      inLanguage: langue.hreflang,
+      description: meta.description,
+      publisher: { '@type': 'Organization', name: e.denomination },
+      offers: {
+        '@type': 'Offer',
+        price: site.app.prix,
+        priceCurrency: site.app.devise,
+        category: 'subscription',
+      },
+    });
+    blocs.push({
+      '@type': 'WebSite',
+      name: site.nom,
+      url: site.domaine + chemin(langue, 'accueil'),
+      inLanguage: langue.hreflang,
+      publisher: { '@type': 'Organization', name: e.denomination },
+    });
+  }
+
+  const graphe = { '@context': 'https://schema.org', '@graph': blocs };
+  return `<script type="application/ld+json">${JSON.stringify(graphe)}</script>`;
+}
+
+function entete(page, langue, meta) {
+  const accueil = chemin(langue, 'accueil');
+  if (page === 'accueil') {
+    const liens = Object.entries(langue.nav)
+      .map(([p, libelle]) => `    <a href="${chemin(langue, p)}">${echappe(libelle)}</a>`)
+      .join('\n');
+    return `<div class="barre">
+  <a class="marque" href="${accueil}" aria-label="${echappe(langue.retourAccueil)}">
+    <img class="signature" src="/assets/img/signature.svg" alt="EducooO" width="150" height="34">
+  </a>
+  <nav>
+${liens}
+  </nav>
+</div>`;
+  }
+  const chapeau = meta.chapeau ? `\n  <p class="date">${meta.chapeau}</p>` : '';
+  return `<header>
+  <a class="marque" href="${accueil}">Educoo<span>O</span></a>
+  <h1>${meta.h1}</h1>${chapeau}
+</header>`;
+}
+
+function pied(page, langue) {
+  const liens = Object.entries(langue.pied)
+    .filter(([p]) => !(page === 'accueil' && p === 'accueil'))
+    .map(([p, libelle]) => `<a href="${chemin(langue, p)}">${echappe(libelle)}</a>`)
+    .join('\n    ');
+
+  const autres = languesPresentes.filter((l) => l.code !== langue.code);
+  const bascule = autres.length
+    ? `\n  <p class="langues">${echappe(langue.autresLangues)} : ` +
+      autres.map((l) => `<a href="${chemin(l, page)}" hreflang="${l.hreflang}">${echappe(l.libelle)}</a>`).join(' · ') +
+      '</p>'
+    : '';
+
+  const e = site.editeur;
+  const classe = page === 'accueil' ? ' class="pied-large"' : '';
+  const bloc = page === 'accueil'
+    ? `  <nav>\n    ${liens}\n  </nav>`
+    : `  <p>${liens.split('\n    ').join(' · ')}</p>`;
+
+  return `<footer${classe}>
+${bloc}
+  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>
+  <a href="mailto:${e.email}">${e.email}</a></p>${bascule}
+</footer>`;
+}
+
+/**
+ * Résout les liens internes du contenu. Écrire href="/confidentialite/" en dur
+ * marcherait en français et renverrait une lectrice néerlandophone sur une page
+ * française : le contenu écrit donc {{lien:confidentialite}} et le générateur
+ * choisit le slug de la langue en cours.
+ */
+function liensInternes(html, langue) {
+  return html.replace(/\{\{lien:([a-z-]+)\}\}/g, (_, page) => {
+    if (!langue.slugs[page]) {
+      if (page !== 'accueil') throw new Error(`Lien interne vers une page inconnue : ${page}`);
+    }
+    return chemin(langue, page);
+  });
+}
+
+function rendu(page, langue, metas) {
+  const meta = metas[page];
+  if (!meta) throw new Error(`Métadonnées manquantes pour « ${page} » en ${langue.code}.`);
+
+  // Un oubli de titre ou de description fait échouer la construction plutôt que
+  // de partir en ligne : une balise vide ne se voit pas à l'œil nu.
+  for (const champ of ['titre', 'description']) {
+    if (!meta[champ]?.trim()) {
+      throw new Error(`« ${champ} » vide pour la page « ${page} » en ${langue.code}.`);
+    }
+  }
+  if (meta.description.length > 165) {
+    throw new Error(`Description trop longue (${meta.description.length} car.) pour « ${page} » en ${langue.code}, Google la coupe vers 160.`);
+  }
+  if (meta.gabarit !== 'accueil' && !meta.h1?.trim()) {
+    throw new Error(`« h1 » vide pour la page « ${page} » en ${langue.code}.`);
+  }
+  const fichier = join(RACINE, 'content', langue.code, `${page}.html`);
+  if (!existsSync(fichier)) throw new Error(`Contenu manquant : ${fichier}`);
+
+  const remplacements = {
+    lang: langue.hreflang,
+    titre: echappe(meta.titre),
+    description: echappe(meta.description),
+    canonical: site.domaine + chemin(langue, page),
+    domaine: site.domaine,
+    ogLocale: OG_LOCALE[langue.code] ?? langue.hreflang,
+    hreflang: balisesHreflang(page),
+    jsonld: jsonld(page, langue, meta),
+    classeMain: meta.gabarit === 'accueil' ? 'large' : '',
+    entete: entete(page, langue, meta),
+    corps: liensInternes(readFileSync(fichier, 'utf8').trim(), langue),
+    pied: pied(page, langue),
+  };
+
+  let html = gabarit;
+  for (const [cle, valeur] of Object.entries(remplacements)) {
+    html = html.replaceAll(`{{${cle}}}`, valeur);
+  }
+  const restants = html.match(/\{\{[a-zA-Z]+\}\}/g);
+  if (restants) throw new Error(`Marqueurs non remplacés : ${[...new Set(restants)].join(', ')}`);
+  return html.replace(/\n{3,}/g, '\n\n');
+}
+
+// ── Génération ─────────────────────────────────────────────────────────────
+
+rmSync(SORTIE, { recursive: true, force: true });
+mkdirSync(SORTIE, { recursive: true });
+cpSync(join(RACINE, 'public'), SORTIE, { recursive: true });
+cpSync(join(RACINE, 'style.css'), join(SORTIE, 'style.css'));
+
+const urls = [];
+
+for (const langue of languesPresentes) {
+  const metas = JSON.parse(readFileSync(join(RACINE, 'content', langue.code, 'meta.json'), 'utf8'));
+  for (const page of site.pages) {
+    const html = rendu(page, langue, metas);
+    const dest = join(SORTIE, chemin(langue, page));
+    mkdirSync(dest, { recursive: true });
+    writeFileSync(join(dest, 'index.html'), html);
+    urls.push({ url: site.domaine + chemin(langue, page), page, langue });
+    console.log(`  ${chemin(langue, page).padEnd(28)} ${String(html.length).padStart(6)} o`);
+  }
+}
+
+// 404 : servie par GitHub Pages sur toute adresse inconnue, donc toujours en
+// langue racine et jamais indexée.
+{
+  const racine = languesPresentes.find((l) => l.code === site.langueRacine);
+  const metas = JSON.parse(readFileSync(join(RACINE, 'content', racine.code, 'meta.json'), 'utf8'));
+  const liens = Object.entries(racine.pied)
+    .map(([p, libelle]) => `    <li><a href="${chemin(racine, p)}">${libelle}</a></li>`).join('\n');
+  writeFileSync(join(SORTIE, '404.html'), `<!doctype html>
+<html lang="${racine.hreflang}">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Page introuvable — EducooO</title>
+<meta name="robots" content="noindex">
+<link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+<link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<main>
+<header>
+  <a class="marque" href="/">Educoo<span>O</span></a>
+  <h1>Cette page n'existe pas</h1>
+  <p class="date">Ça arrive. Rien de cassé.</p>
+</header>
+<section class="centre">
+  <img src="/assets/img/nuage-salut.png" alt="" width="180" height="180" loading="lazy">
+  <ul class="liste-plate">
+${liens}
+  </ul>
+</section>
+</main>
+</body>
+</html>
+`);
+  void metas;
+}
+
+// sitemap.xml : toutes les langues, avec les alternates, ce que Google préfère.
+const entrees = urls.map(({ url, page }) => {
+  const alt = languesPresentes.length > 1
+    ? languesPresentes.map((l) =>
+        `\n    <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${site.domaine}${chemin(l, page)}"/>`).join('')
+    : '';
+  const priorite = page === 'accueil' ? '1.0' : (page === 'mentions-legales' ? '0.3' : '0.7');
+  return `  <url>\n    <loc>${url}</loc>${alt}\n    <priority>${priorite}</priority>\n  </url>`;
+}).join('\n');
+
+writeFileSync(join(SORTIE, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
+${entrees}
+</urlset>
+`);
+
+writeFileSync(join(SORTIE, 'robots.txt'),
+  `User-agent: *\nAllow: /\n\nSitemap: ${site.domaine}/sitemap.xml\n`);
+
+// llms.txt : ce qu'un assistant doit savoir s'il résume EducooO. Même logique
+// que sur vroooz.com.
+const racineL = languesPresentes.find((l) => l.code === site.langueRacine);
+writeFileSync(join(SORTIE, 'llms.txt'), `# ${site.nom}
+
+> Application mobile pour enseignantes du fondamental. Elle capte une observation
+> de classe à la voix, la rattache aux attendus du référentiel officiel, et
+> construit le bilan au fil de l'année.
+
+Éditée par ${site.editeur.denomination}, ${site.editeur.ville}, ${site.editeur.paysNom}.
+Abonnement ${site.app.prix} ${site.app.devise} par an, un mois offert, sans publicité.
+
+## Pages
+${site.pages.filter((p) => p !== 'accueil').map((p) =>
+  `- [${racineL.pied[p]}](${site.domaine}${chemin(racineL, p)})`).join('\n')}
+
+## Ce qu'il faut savoir avant de résumer
+- L'utilisatrice est une adulte professionnelle. L'application n'est pas destinée aux enfants.
+- Le nom complet d'un élève n'est jamais enregistré : le prénom et deux lettres du nom.
+- Aucune publicité, aucun suivi inter-applications, aucun contenu d'élève pour entraîner un modèle.
+- Ni la direction ni les parents n'ont accès aux observations d'une enseignante.
+- La base de données est hébergée dans l'Union européenne.
+`);
+
+writeFileSync(join(SORTIE, 'CNAME'), site.domaine.replace(/^https?:\/\//, ''));
+
+console.log(`\n${urls.length} pages, ${languesPresentes.length} langue(s) : ${languesPresentes.map((l) => l.code).join(', ')}`);
+console.log(`Langues déclarées mais pas encore traduites : ${
+  Object.keys(site.langues).filter((c) => !languesPresentes.some((l) => l.code === c)).join(', ') || 'aucune'}`);
+console.log(`Sortie : ${SORTIE}`);
+void readdirSync;

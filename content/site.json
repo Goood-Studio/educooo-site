@@ -1,0 +1,112 @@
+{
+  "domaine": "https://educooo.com",
+  "nom": "EducooO",
+  "langueRacine": "fr",
+  "pages": ["accueil", "confidentialite", "conditions", "suppression-compte", "support", "mentions-legales"],
+  "editeur": {
+    "denomination": "Goood Studio SRL",
+    "rue": "Rue Henri Lecocq 34",
+    "codePostal": "5000",
+    "ville": "Namur",
+    "pays": "BE",
+    "paysNom": "Belgique",
+    "entreprise": "BE 1033864503",
+    "telephone": "+32473122452",
+    "email": "info@educooo.com"
+  },
+  "app": {
+    "categorie": "EducationalApplication",
+    "plateformes": ["iOS", "Android"],
+    "prix": "59",
+    "devise": "EUR",
+    "periode": "P1Y",
+    "essai": "P1M"
+  },
+  "langues": {
+    "fr": {
+      "hreflang": "fr",
+      "libelle": "Français",
+      "prefixe": "",
+      "defaut": true,
+      "slugs": {
+        "accueil": "",
+        "confidentialite": "confidentialite",
+        "conditions": "conditions",
+        "suppression-compte": "suppression-compte",
+        "support": "support",
+        "mentions-legales": "mentions-legales"
+      },
+      "nav": {
+        "confidentialite": "Confidentialité",
+        "conditions": "Conditions",
+        "support": "Support"
+      },
+      "pied": {
+        "accueil": "Accueil",
+        "confidentialite": "Politique de confidentialité",
+        "conditions": "Conditions d'utilisation",
+        "suppression-compte": "Supprimer ton compte",
+        "support": "Support",
+        "mentions-legales": "Mentions légales"
+      },
+      "retourAccueil": "EducooO, accueil",
+      "autresLangues": "Autres langues"
+    },
+    "nl": {
+      "hreflang": "nl",
+      "libelle": "Nederlands",
+      "prefixe": "/nl",
+      "slugs": {
+        "accueil": "",
+        "confidentialite": "privacy",
+        "conditions": "voorwaarden",
+        "suppression-compte": "account-verwijderen",
+        "support": "hulp",
+        "mentions-legales": "juridische-informatie"
+      },
+      "nav": {
+        "confidentialite": "Privacy",
+        "conditions": "Voorwaarden",
+        "support": "Hulp"
+      },
+      "pied": {
+        "accueil": "Home",
+        "confidentialite": "Privacybeleid",
+        "conditions": "Gebruiksvoorwaarden",
+        "suppression-compte": "Je account verwijderen",
+        "support": "Hulp",
+        "mentions-legales": "Juridische informatie"
+      },
+      "retourAccueil": "EducooO, home",
+      "autresLangues": "Andere talen"
+    },
+    "en": {
+      "hreflang": "en",
+      "libelle": "English",
+      "prefixe": "/en",
+      "slugs": {
+        "accueil": "",
+        "confidentialite": "privacy",
+        "conditions": "terms",
+        "suppression-compte": "delete-account",
+        "support": "support",
+        "mentions-legales": "legal"
+      },
+      "nav": {
+        "confidentialite": "Privacy",
+        "conditions": "Terms",
+        "support": "Support"
+      },
+      "pied": {
+        "accueil": "Home",
+        "confidentialite": "Privacy policy",
+        "conditions": "Terms of use",
+        "suppression-compte": "Delete your account",
+        "support": "Support",
+        "mentions-legales": "Legal notice"
+      },
+      "retourAccueil": "EducooO, home",
+      "autresLangues": "Other languages"
+    }
+  }
+}
