@@ -80,6 +80,8 @@ function jsonld(page, langue, meta) {
       inLanguage: langue.hreflang,
       description: meta.description,
       publisher: { '@type': 'Organization', name: e.denomination },
+      installUrl: site.app.ios,
+      sameAs: [site.app.ios, site.app.android],
       offers: {
         '@type': 'Offer',
         price: site.app.prix,
@@ -103,8 +105,14 @@ function jsonld(page, langue, meta) {
 function entete(page, langue, meta) {
   const accueil = chemin(langue, 'accueil');
   if (page === 'accueil') {
-    const liens = Object.entries(langue.nav)
-      .map(([p, libelle]) => `    <a href="${chemin(langue, p)}">${echappe(libelle)}</a>`)
+    // Les liens vers les pages légales sont sortis de la barre : ils vivent dans
+    // le pied. Une barre qui doit convertir garde l'action principale sous la
+    // main pendant tout le défilement, et rien qui fasse quitter la page.
+    if (!langue.barre?.liens?.length || !langue.barre.cta) {
+      throw new Error(`« barre » manquante ou incomplète pour la langue ${langue.code}.`);
+    }
+    const liens = langue.barre.liens
+      .map((l) => `    <a href="${l.ancre}">${echappe(l.libelle)}</a>`)
       .join('\n');
     return `<div class="barre">
   <a class="marque" href="${accueil}" aria-label="${echappe(langue.retourAccueil)}">
@@ -113,6 +121,7 @@ function entete(page, langue, meta) {
   <nav>
 ${liens}
   </nav>
+  <a class="bouton-barre" href="#telecharger">${echappe(langue.barre.cta)}</a>
 </div>`;
   }
   const chapeau = meta.chapeau ? `\n  <p class="date">${meta.chapeau}</p>` : '';
@@ -141,10 +150,16 @@ function pied(page, langue) {
     ? `  <nav>\n    ${liens}\n  </nav>`
     : `  <p>${liens.split('\n    ').join(' · ')}</p>`;
 
+  // L'identité complète de l'éditeur est obligatoire, mais elle est déjà sur les
+  // mentions légales et sur le support. Sur l'accueil elle ne fait que refroidir
+  // la page : on n'y laisse que la signature.
+  const identite = page === 'accueil'
+    ? `  <p>${echappe(langue.signature)}</p>`
+    : `  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>\n  <a href="mailto:${e.email}">${e.email}</a></p>`;
+
   return `<footer${classe}>
 ${bloc}
-  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>
-  <a href="mailto:${e.email}">${e.email}</a></p>${bascule}
+${identite}${bascule}
 </footer>`;
 }
 
@@ -155,7 +170,14 @@ ${bloc}
  * choisit le slug de la langue en cours.
  */
 function liensInternes(html, langue) {
-  return html.replace(/\{\{lien:([a-z-]+)\}\}/g, (_, page) => {
+  // Les deux URL des stores ne s'écrivent pas en dur dans le contenu : elles
+  // vivent dans site.json, à un seul endroit, parce qu'elles changeront.
+  const avecStores = html.replace(/\{\{app:(ios|android)\}\}/g, (_, plateforme) => {
+    const url = site.app[plateforme];
+    if (!url) throw new Error(`Lien de téléchargement manquant dans site.json : app.${plateforme}`);
+    return url;
+  });
+  return avecStores.replace(/\{\{lien:([a-z-]+)\}\}/g, (_, page) => {
     if (!langue.slugs[page]) {
       if (page !== 'accueil') throw new Error(`Lien interne vers une page inconnue : ${page}`);
     }
@@ -214,7 +236,7 @@ function rendu(page, langue, metas) {
   for (const [cle, valeur] of Object.entries(remplacements)) {
     html = html.replaceAll(`{{${cle}}}`, valeur);
   }
-  const restants = html.match(/\{\{[a-zA-Z]+\}\}/g);
+  const restants = html.match(/\{\{[a-zA-Z][a-zA-Z0-9:_-]*\}\}/g);
   if (restants) throw new Error(`Marqueurs non remplacés : ${[...new Set(restants)].join(', ')}`);
   return sansCadratin(html.replace(/\n{3,}/g, '\n\n'), `${page} en ${langue.code}`);
 }

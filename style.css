@@ -150,3 +150,148 @@ img { max-width: 100%; height: auto; }
 .centre { text-align: center; }
 .liste-plate { list-style: none; padding: 0; text-align: left; max-width: 24em; margin: 8px auto 0; }
 .langues { margin-top: 14px; }
+
+/* ── Page de conversion ─────────────────────────────────────────────────────
+   Ajouté le 19/08/2026 : l'accueil passe de page de présentation à page qui
+   doit faire télécharger. Un seul appel à l'action, les deux boutons de store,
+   répété trois fois : dans le hero, dans la barre du haut, et à la fin. */
+
+.sur-titre {
+  font-family: var(--titre); font-weight: 800; font-size: 14px;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  background: var(--action); -webkit-background-clip: text; background-clip: text;
+  color: transparent; margin: 0 0 10px;
+}
+.hero-texte .hero-sous { font-size: 19px; color: var(--encre-douce); margin: 0 0 24px; max-width: 44ch; }
+
+/* Les deux boutons de store. Ce ne sont pas les visuels officiels d'Apple et de
+   Google, qui sont des images à télécharger : ce sont des boutons dessinés à la
+   charte, sans aucune requête externe. */
+.badges { display: flex; gap: 12px; flex-wrap: wrap; }
+.badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  background: var(--encre); color: #fff; text-decoration: none;
+  padding: 11px 18px 11px 16px; border-radius: 14px;
+  box-shadow: var(--ombre-haute); transition: transform .12s ease;
+}
+.badge:hover { transform: translateY(-1px); }
+.badge svg { width: 22px; height: 22px; fill: #fff; flex: 0 0 22px; }
+.badge span {
+  display: flex; flex-direction: column; line-height: 1.12;
+  font-family: var(--titre); font-weight: 800; font-size: 16px;
+}
+.badge small { font-family: var(--texte); font-weight: 400; font-size: 11px; opacity: .75; }
+
+.bouton-barre {
+  background: var(--action); color: #fff; text-decoration: none;
+  font-family: var(--titre); font-weight: 800; font-size: 15px;
+  padding: 10px 18px; border-radius: 12px; white-space: nowrap;
+}
+
+/* La bande de réassurance, juste sous le hero : elle répond aux objections que
+   se pose une enseignante avant même d'avoir lu la suite. */
+.bande-preuves {
+  list-style: none; padding: 16px 20px; margin: 32px 0 8px;
+  background: var(--surface); border-radius: 20px; box-shadow: var(--ombre);
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px 20px;
+  font-size: 14px; color: var(--encre-douce); text-align: center;
+}
+.bande-preuves li { margin: 0; }
+
+.t-corail { background: var(--corail); }
+.t-jaune { background: var(--jaune); }
+
+/* Les trois gestes, numérotés : l'ordre est le message. */
+.etapes { list-style: none; padding: 0; margin: 16px 0; counter-reset: etape; }
+.etapes li {
+  display: flex; gap: 20px; align-items: flex-start; margin: 0;
+  background: var(--surface); border-radius: 24px; padding: 24px;
+  box-shadow: var(--ombre); margin-bottom: 12px;
+}
+.etapes .numero {
+  flex: 0 0 40px; width: 40px; height: 40px; border-radius: 14px;
+  background: var(--action); color: #fff; display: grid; place-items: center;
+  font-family: var(--titre); font-weight: 800; font-size: 18px;
+}
+.etapes h3 { margin: 6px 0 4px; font-size: 19px; font-weight: 800; }
+.etapes p { margin: 0; color: var(--encre-douce); }
+
+.grille-six { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin: 16px 0; }
+.grille-six .carte { margin: 0; }
+.grille-six h3 { margin: 14px 0 6px; font-size: 17px; font-weight: 800; font-family: var(--titre); }
+.grille-six p { margin: 0; font-size: 15px; color: var(--encre-douce); }
+
+/* Le prix : un seul chiffre, gros, et ce qu'il contient juste en dessous. */
+.prix { text-align: center; padding: 32px 24px; }
+.prix-chiffre { margin: 0; display: flex; align-items: baseline; justify-content: center; gap: 8px; }
+.prix-chiffre strong {
+  font-family: var(--titre); font-weight: 800; font-size: 56px; line-height: 1;
+  letter-spacing: -0.03em;
+  background: var(--action); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.prix-chiffre span { color: var(--encre-douce); font-size: 17px; }
+.prix-appui { color: var(--encre-douce); margin: 8px 0 20px; }
+.prix .liste-nue { text-align: left; max-width: 30em; margin: 0 auto; }
+.prix .mention { max-width: 42em; margin: 20px auto 0; }
+
+/* Les questions : <details> natif, donc aucun JavaScript, et le texte des
+   réponses reste lisible par un moteur de recherche même replié. */
+.questions { padding: 8px 24px; }
+.questions details { border-bottom: 1px solid var(--bord); }
+.questions details:last-child { border-bottom: 0; }
+.questions summary {
+  font-family: var(--titre); font-weight: 800; font-size: 17px;
+  padding: 18px 32px 18px 0; cursor: pointer; position: relative; list-style: none;
+}
+.questions summary::-webkit-details-marker { display: none; }
+.questions summary::after {
+  content: ""; position: absolute; right: 6px; top: 24px;
+  width: 9px; height: 9px; border-right: 2.5px solid var(--corail);
+  border-bottom: 2.5px solid var(--corail); transform: rotate(45deg);
+  transition: transform .15s ease;
+}
+.questions details[open] summary::after { transform: rotate(-135deg); top: 27px; }
+.questions details p { margin: 0 0 20px; color: var(--encre-douce); }
+
+.bandeau img { border-radius: 24px; margin-bottom: 4px; }
+.bandeau .badges { justify-content: center; }
+.bandeau .mention { margin-top: 16px; }
+
+/* La barre collante du bas, sur téléphone seulement : c'est là que se joue la
+   conversion, et le bouton du haut est déjà loin après trois écrans. */
+.barre-collante { display: none; }
+
+@media (max-width: 760px) {
+  .barre nav { display: none; }
+  .barre { margin-bottom: 28px; }
+  .bande-preuves { grid-template-columns: 1fr 1fr; text-align: left; font-size: 13px; }
+  .grille-six { grid-template-columns: 1fr; }
+  .grille-six .carte { text-align: center; }
+  .etapes li { gap: 14px; padding: 20px; }
+  .badges { justify-content: center; }
+  .hero-texte .hero-sous { margin-left: auto; margin-right: auto; font-size: 17px; }
+  /* Sur téléphone, chaque pixel gagné dans le hero rapproche les deux boutons
+     de store du premier écran. */
+  .sur-titre { font-size: 12px; letter-spacing: 0.06em; margin-bottom: 6px; }
+  .hero-image img { max-width: 168px; }
+  .prix-chiffre strong { font-size: 46px; }
+
+  .barre-collante {
+    display: flex; gap: 10px; justify-content: center;
+    position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
+    padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
+    background: rgba(241, 240, 246, 0.92);
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    border-top: 1px solid var(--bord);
+  }
+  .barre-collante .badge { padding: 10px 14px; box-shadow: none; flex: 1 1 0; justify-content: center; }
+  .barre-collante .badge span { font-size: 15px; }
+  /* Sans ça, la barre collante recouvre les derniers liens du pied. */
+  .pied-large { padding-bottom: 76px; }
+}
+
+@media (max-width: 460px) {
+  .bande-preuves { grid-template-columns: 1fr; }
+  .badge { width: 100%; justify-content: center; }
+  .barre-collante .badge { width: auto; }
+}

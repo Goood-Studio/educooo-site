@@ -20,7 +20,9 @@
     "prix": "59",
     "devise": "EUR",
     "periode": "P1Y",
-    "essai": "P1M"
+    "essai": "P1M",
+    "ios": "https://apps.apple.com/app/id6802792239",
+    "android": "https://play.google.com/store/apps/details?id=com.gooodstudio.educooo"
   },
   "langues": {
     "fr": {
@@ -36,10 +38,14 @@
         "support": "support",
         "mentions-legales": "mentions-legales"
       },
-      "nav": {
-        "confidentialite": "Confidentialité",
-        "conditions": "Conditions",
-        "support": "Support"
+      "barre": {
+        "liens": [
+          { "ancre": "#comment", "libelle": "Comment ça marche" },
+          { "ancre": "#donnees", "libelle": "Tes données" },
+          { "ancre": "#prix", "libelle": "Prix" },
+          { "ancre": "#questions", "libelle": "Questions" }
+        ],
+        "cta": "Télécharger"
       },
       "pied": {
         "accueil": "Accueil",
@@ -49,6 +55,7 @@
         "support": "Support",
         "mentions-legales": "Mentions légales"
       },
+      "signature": "Fait pour les enseignant·es du fondamental, en Fédération Wallonie-Bruxelles.",
       "retourAccueil": "EducooO, accueil",
       "autresLangues": "Autres langues"
     },
@@ -64,10 +71,14 @@
         "support": "hulp",
         "mentions-legales": "juridische-informatie"
       },
-      "nav": {
-        "confidentialite": "Privacy",
-        "conditions": "Voorwaarden",
-        "support": "Hulp"
+      "barre": {
+        "liens": [
+          { "ancre": "#comment", "libelle": "Hoe het werkt" },
+          { "ancre": "#donnees", "libelle": "Je gegevens" },
+          { "ancre": "#prix", "libelle": "Prijs" },
+          { "ancre": "#questions", "libelle": "Vragen" }
+        ],
+        "cta": "Downloaden"
       },
       "pied": {
         "accueil": "Home",
@@ -77,6 +88,7 @@
         "support": "Hulp",
         "mentions-legales": "Juridische informatie"
       },
+      "signature": "Gemaakt voor leerkrachten in het basisonderwijs.",
       "retourAccueil": "EducooO, home",
       "autresLangues": "Andere talen"
     },
@@ -92,10 +104,14 @@
         "support": "support",
         "mentions-legales": "legal"
       },
-      "nav": {
-        "confidentialite": "Privacy",
-        "conditions": "Terms",
-        "support": "Support"
+      "barre": {
+        "liens": [
+          { "ancre": "#comment", "libelle": "How it works" },
+          { "ancre": "#donnees", "libelle": "Your data" },
+          { "ancre": "#prix", "libelle": "Pricing" },
+          { "ancre": "#questions", "libelle": "Questions" }
+        ],
+        "cta": "Download"
       },
       "pied": {
         "accueil": "Home",
@@ -105,6 +121,7 @@
         "support": "Support",
         "mentions-legales": "Legal notice"
       },
+      "signature": "Built for primary school teachers.",
       "retourAccueil": "EducooO, home",
       "autresLangues": "Other languages"
     }
