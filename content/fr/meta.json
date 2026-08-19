@@ -1,42 +1,42 @@
 {
   "confidentialite": {
     "gabarit": "document",
-    "titre": "Politique de confidentialité — EducooO",
+    "titre": "Politique de confidentialité · EducooO",
     "description": "Ce qui est stocké, où, pendant combien de temps et qui d'autre y touche. Le fonctionnement réel d'EducooO, prestataire par prestataire.",
     "h1": "Politique de confidentialité",
     "chapeau": "Version 1.0, en vigueur au 18 août 2026. Éditée par Goood Studio SRL."
   },
   "conditions": {
     "gabarit": "document",
-    "titre": "Conditions d'utilisation — EducooO",
+    "titre": "Conditions d'utilisation · EducooO",
     "description": "Les règles d'utilisation d'EducooO : ton compte, l'abonnement à 59 € par an, ce qui t'appartient, notre responsabilité.",
     "h1": "Conditions d'utilisation",
     "chapeau": "Version 1.0, en vigueur au 18 août 2026. Éditée par Goood Studio SRL."
   },
   "suppression-compte": {
     "gabarit": "document",
-    "titre": "Supprimer ton compte — EducooO",
+    "titre": "Supprimer ton compte · EducooO",
     "description": "Comment supprimer ton compte EducooO en deux touches, ce qui est effacé, sous quel délai, et ce qu'il faut faire de ton abonnement.",
     "h1": "Supprimer ton compte",
     "chapeau": "Page exigée par Google Play et par App Store Connect."
   },
   "support": {
     "gabarit": "document",
-    "titre": "Support — EducooO",
+    "titre": "Support · EducooO",
     "description": "Comment nous joindre, ce qu'on peut faire pour toi et sous quel délai.",
     "h1": "Support",
     "chapeau": "Une petite équipe, mais tu tombes sur une vraie personne."
   },
   "mentions-legales": {
     "gabarit": "document",
-    "titre": "Mentions légales — EducooO",
+    "titre": "Mentions légales · EducooO",
     "description": "Éditeur, hébergeur et coordonnées de contact d'EducooO.",
     "h1": "Mentions légales",
     "chapeau": "Mises à jour le 19 août 2026."
   },
   "accueil": {
     "gabarit": "accueil",
-    "titre": "EducooO — Moins de paperasse, c'est la classe",
+    "titre": "EducooO · Moins de paperasse, c'est la classe",
     "description": "EducooO capte tes observations de classe à la voix, les range dans le référentiel et te sort le bilan. Application pour enseignantes du fondamental.",
     "h1": "",
     "chapeau": ""

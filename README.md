@@ -61,6 +61,7 @@ générateur depuis `content/site.json`.
 
 ## Règles de rédaction
 
-Tutoiement. Écriture inclusive. Aucun tiret cadratin. Aucun émoji. Une seule
+Tutoiement. Écriture inclusive. Aucun tiret cadratin : le générateur refuse
+de construire une page qui en contient un, titres compris. Aucun émoji. Une seule
 blague par page, et jamais sur une suppression ni sur un élève. La marque
 s'écrit **EducooO**.

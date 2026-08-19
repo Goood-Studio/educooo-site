@@ -163,6 +163,18 @@ function liensInternes(html, langue) {
   });
 }
 
+// Règle d'écriture du studio : aucun tiret cadratin dans le texte visible. Le
+// défaut ne se voit pas à la relecture et atterrit dans l'onglet du navigateur
+// et dans les résultats de recherche, donc c'est la construction qui le refuse.
+// Six titres sont passés à travers avant que ce contrôle existe.
+function sansCadratin(html, ou) {
+  if (html.includes('\u2014')) {
+    const ligne = html.split('\n').find((l) => l.includes('\u2014')).trim();
+    throw new Error(`Tiret cadratin dans « ${ou} » : ${ligne}`);
+  }
+  return html;
+}
+
 function rendu(page, langue, metas) {
   const meta = metas[page];
   if (!meta) throw new Error(`Métadonnées manquantes pour « ${page} » en ${langue.code}.`);
@@ -204,7 +216,7 @@ function rendu(page, langue, metas) {
   }
   const restants = html.match(/\{\{[a-zA-Z]+\}\}/g);
   if (restants) throw new Error(`Marqueurs non remplacés : ${[...new Set(restants)].join(', ')}`);
-  return html.replace(/\n{3,}/g, '\n\n');
+  return sansCadratin(html.replace(/\n{3,}/g, '\n\n'), `${page} en ${langue.code}`);
 }
 
 // ── Génération ─────────────────────────────────────────────────────────────
@@ -235,12 +247,12 @@ for (const langue of languesPresentes) {
   const metas = JSON.parse(readFileSync(join(RACINE, 'content', racine.code, 'meta.json'), 'utf8'));
   const liens = Object.entries(racine.pied)
     .map(([p, libelle]) => `    <li><a href="${chemin(racine, p)}">${libelle}</a></li>`).join('\n');
-  writeFileSync(join(SORTIE, '404.html'), `<!doctype html>
+  writeFileSync(join(SORTIE, '404.html'), sansCadratin(`<!doctype html>
 <html lang="${racine.hreflang}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Page introuvable — EducooO</title>
+<title>Page introuvable · EducooO</title>
 <meta name="robots" content="noindex">
 <link rel="icon" href="/assets/img/favicon.ico" sizes="any">
 <link rel="stylesheet" href="/style.css">
@@ -261,7 +273,7 @@ ${liens}
 </main>
 </body>
 </html>
-`);
+`, '404.html'));
   void metas;
 }
 
