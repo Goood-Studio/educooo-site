@@ -320,7 +320,7 @@ ${site.pages.filter((p) => p !== 'accueil').map((p) =>
 - La base de données est hébergée dans l'Union européenne.
 `);
 
-writeFileSync(join(SORTIE, 'CNAME'), site.domaine.replace(/^https?:\/\//, ''));
+writeFileSync(join(SORTIE, 'CNAME'), site.domaine.replace(/^https?:\/\//, '') + '\n');
 
 console.log(`\n${urls.length} pages, ${languesPresentes.length} langue(s) : ${languesPresentes.map((l) => l.code).join(', ')}`);
 console.log(`Langues déclarées mais pas encore traduites : ${
