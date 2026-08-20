@@ -323,7 +323,20 @@ img { max-width: 100%; height: auto; }
 }
 .avis blockquote::before { content: open-quote; color: var(--miel); font-weight: 700; }
 .avis blockquote::after { content: close-quote; color: var(--miel); font-weight: 700; }
-.avis figcaption { display: flex; flex-direction: column; font-size: 14px; }
+.avis figcaption { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+.avis-qui { display: flex; flex-direction: column; }
+/* Avatars des témoignages : des initiales, pas des visages. Fabriquer des
+   portraits pour des témoignages réels donnerait de faux visages à de vraies
+   personnes, et la mascotte est le personnage de l'app, pas celui des
+   enseignantes qui la citent. */
+.avatar {
+  flex: none; width: 40px; height: 40px; border-radius: 50%;
+  display: grid; place-items: center; color: #fff;
+  font-family: var(--titre); font-weight: 800; font-size: 17px;
+}
+.a-sarcelle { background: var(--sarcelle); }
+.a-bleu { background: var(--bleu); }
+.a-violet { background: var(--violet); }
 .avis figcaption strong { font-family: var(--titre); font-weight: 800; font-size: 16px; }
 .avis figcaption span { color: var(--encre-douce); }
 
@@ -484,4 +497,25 @@ h1, h2, h3, .phare-titre { text-wrap: balance; }
 @media (max-width: 760px) {
   .contraste { padding: 20px; }
   .contraste-paire { grid-template-columns: 1fr; }
+}
+
+/* ── Cloudy dans la page ────────────────────────────────────────────────────
+   Ajouté le 20/08/2026. Le texte disait « il » sans que le lecteur sache qui,
+   donc la mascotte est nommée et montrée là où le pronom apparaît. Les poses
+   sont détourées sur fond transparent : un carré lavande se verrait sur les
+   cartes blanches. */
+.etapes li { flex-wrap: wrap; }
+.etapes li > div { flex: 1 1 210px; }
+.etape-image { flex: 0 0 112px; width: 112px; height: auto; align-self: center; margin-left: auto; }
+.titre-mascotte { display: block; width: 88px; height: auto; margin: 0 auto 4px; }
+.phare-illustre {
+  display: grid; grid-template-columns: 200px 1fr; gap: 24px; align-items: center;
+}
+.phare-illustre > img { width: 200px; height: auto; }
+@media (max-width: 760px) {
+  .phare-illustre { grid-template-columns: 1fr; gap: 8px; }
+  .phare-illustre > img { width: 160px; margin: 0 auto; }
+}
+@media (max-width: 560px) {
+  .etape-image { flex: 0 0 64px; width: 64px; margin: 6px auto 0; }
 }
