@@ -40,7 +40,7 @@ if (!localesPresentes.some((l) => l.code === site.localeRacine)) {
 }
 
 for (const l of localesPresentes) {
-  for (const cle of ['pays', 'langue', 'juridiction', 'hreflang', 'ogLocale']) {
+  for (const cle of ['pays', 'langue', 'juridiction', 'hreflang', 'ogLocale', 'juridictionNom']) {
     if (!l[cle]) throw new Error(`La locale « ${l.code} » n'a pas de « ${cle} ».`);
   }
   const attendu = `${l.pays}-${l.langue}-${l.juridiction}`.toLowerCase();
@@ -184,8 +184,14 @@ function pied(page, langue) {
   // L'identité complète de l'éditeur est obligatoire, mais elle est déjà sur les
   // mentions légales et sur le support. Sur l'accueil elle ne fait que refroidir
   // la page : on n'y laisse que la signature.
+  // La signature nomme la juridiction par substitution, jamais en dur : une
+  // locale ne peut donc pas revendiquer le référentiel d'une autre.
+  const signature = langue.signature.replace('{{juridiction}}', langue.juridictionNom);
+  if (signature.includes('{{')) {
+    throw new Error(`Signature de « ${langue.code} » : substitution non résolue.`);
+  }
   const identite = page === 'accueil'
-    ? `  <p>${echappe(langue.signature)}</p>`
+    ? `  <p>${echappe(signature)}</p>`
     : `  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>\n  <a href="mailto:${e.email}">${e.email}</a></p>`;
 
   return `<footer${classe}>

@@ -78,7 +78,7 @@
         "support": "Support",
         "mentions-legales": "Mentions légales"
       },
-      "signature": "Fait pour les enseignant·es du fondamental.",
+      "signature": "Fait pour les enseignant·es du fondamental, en {{juridiction}}.",
       "retourAccueil": "EducooO, accueil",
       "autresLangues": "Autres langues",
       "piedAncres": [
@@ -94,7 +94,8 @@
           "ancre": "#prix",
           "libelle": "Prix"
         }
-      ]
+      ],
+      "juridictionNom": "Fédération Wallonie-Bruxelles"
     },
     "be-nl-fwb": {
       "pays": "BE",
@@ -141,9 +142,10 @@
         "support": "Hulp",
         "mentions-legales": "Juridische informatie"
       },
-      "signature": "Gemaakt voor leerkrachten in het basisonderwijs.",
+      "signature": "Gemaakt voor leerkrachten in het basisonderwijs, in de {{juridiction}}.",
       "retourAccueil": "EducooO, home",
-      "autresLangues": "Andere talen"
+      "autresLangues": "Andere talen",
+      "juridictionNom": "Federatie Wallonië-Brussel"
     },
     "be-de-dg": {
       "pays": "BE",
@@ -155,44 +157,56 @@
       "libelle": "Deutsch",
       "slugs": {
         "accueil": "",
-        "confidentialite": "privacy",
-        "conditions": "voorwaarden",
-        "suppression-compte": "account-verwijderen",
-        "support": "hulp",
-        "mentions-legales": "juridische-informatie"
+        "confidentialite": "datenschutz",
+        "conditions": "nutzungsbedingungen",
+        "suppression-compte": "konto-loeschen",
+        "support": "hilfe",
+        "mentions-legales": "impressum"
       },
       "barre": {
         "liens": [
           {
-            "ancre": "#comment",
-            "libelle": "Hoe het werkt"
+            "ancre": "#auto-detection",
+            "libelle": "Auto-Erkennung"
           },
           {
-            "ancre": "#donnees",
-            "libelle": "Je gegevens"
+            "ancre": "#lecons",
+            "libelle": "Unterrichtsideen"
           },
           {
-            "ancre": "#prix",
-            "libelle": "Prijs"
-          },
-          {
-            "ancre": "#questions",
-            "libelle": "Vragen"
+            "ancre": "#vision",
+            "libelle": "Vision"
           }
         ],
-        "cta": "Downloaden"
+        "cta": "Herunterladen",
+        "menu": "Menü öffnen"
       },
       "pied": {
-        "accueil": "Home",
-        "confidentialite": "Privacybeleid",
-        "conditions": "Gebruiksvoorwaarden",
-        "suppression-compte": "Je account verwijderen",
-        "support": "Hulp",
-        "mentions-legales": "Juridische informatie"
+        "accueil": "Startseite",
+        "confidentialite": "Datenschutzerklärung",
+        "conditions": "Nutzungsbedingungen",
+        "suppression-compte": "Konto löschen",
+        "support": "Hilfe",
+        "mentions-legales": "Impressum"
       },
-      "signature": "Gemaakt voor leerkrachten in het basisonderwijs.",
-      "retourAccueil": "EducooO, home",
-      "autresLangues": "Andere talen"
+      "signature": "Für Lehrkräfte der Grundschule, in der {{juridiction}}.",
+      "retourAccueil": "EducooO, Startseite",
+      "autresLangues": "Andere Sprachen",
+      "juridictionNom": "Deutschsprachige Gemeinschaft",
+      "piedAncres": [
+        {
+          "ancre": "#questions",
+          "libelle": "Fragen"
+        },
+        {
+          "ancre": "#donnees",
+          "libelle": "Deine Daten"
+        },
+        {
+          "ancre": "#prix",
+          "libelle": "Preis"
+        }
+      ]
     },
     "be-en-fwb": {
       "pays": "BE",
@@ -239,9 +253,10 @@
         "support": "Support",
         "mentions-legales": "Legal notice"
       },
-      "signature": "Built for primary school teachers.",
+      "signature": "Built for primary school teachers, in the {{juridiction}}.",
       "retourAccueil": "EducooO, home",
-      "autresLangues": "Other languages"
+      "autresLangues": "Other languages",
+      "juridictionNom": "Fédération Wallonie-Bruxelles"
     }
   }
 }
