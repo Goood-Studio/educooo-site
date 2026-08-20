@@ -55,12 +55,8 @@
             "libelle": "Auto-détection"
           },
           {
-            "ancre": "#donnees",
-            "libelle": "Tes données"
-          },
-          {
-            "ancre": "#prix",
-            "libelle": "Prix"
+            "ancre": "#vision",
+            "libelle": "Vision"
           },
           {
             "ancre": "#questions",
@@ -79,7 +75,17 @@
       },
       "signature": "Fait pour les enseignant·es du fondamental.",
       "retourAccueil": "EducooO, accueil",
-      "autresLangues": "Autres langues"
+      "autresLangues": "Autres langues",
+      "piedAncres": [
+        {
+          "ancre": "#donnees",
+          "libelle": "Tes données"
+        },
+        {
+          "ancre": "#prix",
+          "libelle": "Prix"
+        }
+      ]
     },
     "nl": {
       "hreflang": "nl",

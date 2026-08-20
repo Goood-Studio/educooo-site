@@ -132,10 +132,18 @@ ${liens}
 }
 
 function pied(page, langue) {
-  const liens = Object.entries(langue.pied)
-    .filter(([p]) => !(page === 'accueil' && p === 'accueil'))
-    .map(([p, libelle]) => `<a href="${chemin(langue, p)}">${echappe(libelle)}</a>`)
-    .join('\n    ');
+  // Les ancres du pied n'existent que sur l'accueil : ailleurs, elles pointeraient
+  // vers des sections absentes de la page. Elles ont été sorties de la barre du
+  // haut le 20/08/2026 pour n'y garder que ce qui fait avancer la décision.
+  const ancres = page === 'accueil'
+    ? (langue.piedAncres ?? []).map((a) => `<a href="${a.ancre}">${echappe(a.libelle)}</a>`)
+    : [];
+  const liens = [
+    ...ancres,
+    ...Object.entries(langue.pied)
+      .filter(([p]) => !(page === 'accueil' && p === 'accueil'))
+      .map(([p, libelle]) => `<a href="${chemin(langue, p)}">${echappe(libelle)}</a>`),
+  ].join('\n    ');
 
   const autres = languesPresentes.filter((l) => l.code !== langue.code);
   const bascule = autres.length

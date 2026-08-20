@@ -329,14 +329,13 @@ img { max-width: 100%; height: auto; }
    portraits pour des témoignages réels donnerait de faux visages à de vraies
    personnes, et la mascotte est le personnage de l'app, pas celui des
    enseignantes qui la citent. */
+/* Portraits illustrés dans la pâte de Cloudy, pas des photographies : ce sont
+   des personnes réelles, on ne leur fabrique pas un visage photographique. Le
+   fond lavande du rendu fait le médaillon. */
 .avatar {
-  flex: none; width: 40px; height: 40px; border-radius: 50%;
-  display: grid; place-items: center; color: #fff;
-  font-family: var(--titre); font-weight: 800; font-size: 17px;
+  flex: none; width: 48px; height: 48px; border-radius: 50%;
+  object-fit: cover; border: 1px solid var(--bord);
 }
-.a-sarcelle { background: var(--sarcelle); }
-.a-bleu { background: var(--bleu); }
-.a-violet { background: var(--violet); }
 .avis figcaption strong { font-family: var(--titre); font-weight: 800; font-size: 16px; }
 .avis figcaption span { color: var(--encre-douce); }
 
@@ -518,4 +517,44 @@ h1, h2, h3, .phare-titre { text-wrap: balance; }
 }
 @media (max-width: 560px) {
   .etape-image { flex: 0 0 64px; width: 64px; margin: 6px auto 0; }
+}
+
+/* ── Vision et manifeste ────────────────────────────────────────────────────
+   Ajouté le 20/08/2026. Une conviction par bloc, lisible en diagonale, parce
+   que personne ne lit un manifeste d'un trait. */
+/* La règle « section, .carte » donne un fond blanc à tout <section> : ici le
+   conteneur doit rester transparent, sinon on obtient des cartes dans une carte. */
+.manifeste {
+  display: flex; flex-direction: column; gap: 14px;
+  background: none; box-shadow: none; padding: 0; margin: 16px 0;
+}
+.manifeste article {
+  background: var(--surface); border: 1px solid var(--bord); border-radius: 18px;
+  padding: 20px 22px;
+  /* filet d'accent à gauche seulement : un border-image peindrait les quatre côtés */
+  box-shadow: inset 3px 0 0 var(--miel), var(--ombre);
+}
+.manifeste h3 {
+  font-family: var(--titre); font-weight: 800; font-size: 18px;
+  margin: 0 0 8px; letter-spacing: -0.01em;
+}
+.manifeste article p { margin: 0; color: var(--encre-douce); }
+.manifeste-chute { margin: 8px 0 0; padding: 0 4px; }
+.manifeste-chute strong { color: var(--encre); }
+
+/* ── Pièges résolus le 20/08/2026 ───────────────────────────────────────────
+   Sur téléphone, la barre collante fournit déjà les deux boutons de store en
+   permanence. Les répéter dans le bandeau final les faisait passer sous elle,
+   d'où l'impression de boutons coupés. */
+@media (max-width: 760px) {
+  .badges-bandeau { display: none; }
+  .bandeau { padding-bottom: 8px; }
+}
+
+/* Le logo était perdu à côté du bouton orange : il gagne quelques pixels et un
+   fond blanc qui le décolle du lavande. */
+.marque .signature {
+  height: 38px; width: auto; display: block;
+  background: #fff; border-radius: 10px; padding: 4px 9px;
+  box-shadow: 0 1px 2px rgba(23, 22, 34, 0.06);
 }
