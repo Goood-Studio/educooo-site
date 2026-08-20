@@ -2,7 +2,14 @@
   "domaine": "https://educooo.com",
   "nom": "EducooO",
   "langueRacine": "fr",
-  "pages": ["accueil", "confidentialite", "conditions", "suppression-compte", "support", "mentions-legales"],
+  "pages": [
+    "accueil",
+    "confidentialite",
+    "conditions",
+    "suppression-compte",
+    "support",
+    "mentions-legales"
+  ],
   "editeur": {
     "denomination": "Goood Studio SRL",
     "rue": "Rue Henri Lecocq 34",
@@ -16,7 +23,10 @@
   },
   "app": {
     "categorie": "EducationalApplication",
-    "plateformes": ["iOS", "Android"],
+    "plateformes": [
+      "iOS",
+      "Android"
+    ],
     "prix": "59.99",
     "devise": "EUR",
     "periode": "P1Y",
@@ -40,10 +50,26 @@
       },
       "barre": {
         "liens": [
-          { "ancre": "#comment", "libelle": "Comment ça marche" },
-          { "ancre": "#donnees", "libelle": "Tes données" },
-          { "ancre": "#prix", "libelle": "Prix" },
-          { "ancre": "#questions", "libelle": "Questions" }
+          {
+            "ancre": "#auto-detection",
+            "libelle": "Auto-détection"
+          },
+          {
+            "ancre": "#comment",
+            "libelle": "Comment"
+          },
+          {
+            "ancre": "#donnees",
+            "libelle": "Tes données"
+          },
+          {
+            "ancre": "#prix",
+            "libelle": "Prix"
+          },
+          {
+            "ancre": "#questions",
+            "libelle": "Questions"
+          }
         ],
         "cta": "Télécharger"
       },
@@ -73,10 +99,22 @@
       },
       "barre": {
         "liens": [
-          { "ancre": "#comment", "libelle": "Hoe het werkt" },
-          { "ancre": "#donnees", "libelle": "Je gegevens" },
-          { "ancre": "#prix", "libelle": "Prijs" },
-          { "ancre": "#questions", "libelle": "Vragen" }
+          {
+            "ancre": "#comment",
+            "libelle": "Hoe het werkt"
+          },
+          {
+            "ancre": "#donnees",
+            "libelle": "Je gegevens"
+          },
+          {
+            "ancre": "#prix",
+            "libelle": "Prijs"
+          },
+          {
+            "ancre": "#questions",
+            "libelle": "Vragen"
+          }
         ],
         "cta": "Downloaden"
       },
@@ -106,10 +144,22 @@
       },
       "barre": {
         "liens": [
-          { "ancre": "#comment", "libelle": "How it works" },
-          { "ancre": "#donnees", "libelle": "Your data" },
-          { "ancre": "#prix", "libelle": "Pricing" },
-          { "ancre": "#questions", "libelle": "Questions" }
+          {
+            "ancre": "#comment",
+            "libelle": "How it works"
+          },
+          {
+            "ancre": "#donnees",
+            "libelle": "Your data"
+          },
+          {
+            "ancre": "#prix",
+            "libelle": "Pricing"
+          },
+          {
+            "ancre": "#questions",
+            "libelle": "Questions"
+          }
         ],
         "cta": "Download"
       },

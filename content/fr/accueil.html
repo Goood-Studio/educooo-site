@@ -1,7 +1,7 @@
 <div class="hero"><div class="hero-texte">
     <p class="sur-titre">Enseignant·e dans le fondamental</p>
     <h1>Tes bilans se remplissent, tes leçons s'écrivent.</h1>
-    <p class="hero-sous">Tu dictes une observation en dix secondes. EducooO la range dans ton référentiel, voit ce qu'il te reste à travailler, et t'en propose la leçon. Toi, tu retournes à tes élèves.</p>
+    <p class="hero-sous">Tu décris ta leçon en une phrase, ou tu dictes une observation en dix secondes. EducooO auto-détecte les compétences travaillées, les transversales comprises, et te montre sur quoi il s'appuie. Tu valides d'un geste, et tu retournes à tes élèves.</p>
     <div class="badges">
       <a class="badge" href="{{app:ios}}"><img src="/assets/img/badge-app-store.svg" alt="Télécharger dans l'App Store" width="127" height="40"></a>
       <a class="badge badge-play" href="{{app:android}}"><img src="/assets/img/badge-google-play.png" alt="Disponible sur Google Play" width="135" height="52" loading="lazy"></a>
@@ -14,7 +14,7 @@
 </div>
 
 <ul class="bande-preuves">
-  <li>Tronc commun FWB pré-chargé, plus de 7 500 attendus</li>
+  <li>Tes référentiels officiels pré-chargés, plus de 7 000 attendus</li>
   <li>Aucun nom complet d'élève enregistré</li>
   <li>Hébergé dans l'Union européenne</li>
   <li>Compte supprimé en deux touches</li>
@@ -49,8 +49,61 @@
   </div>
 </div>
 
+<div class="titre-section" id="auto-detection">
+  <h2>L'auto-détection des compétences</h2>
+  <p>Le dimanche soir, tu le récupères.</p>
+</div>
+
+<section class="phare">
+  <p class="phare-titre">Tu n'ouvres plus le référentiel</p>
+  <p>Écrire ta leçon, tu sais faire. Ce qui coûte, c'est l'après. Ouvrir le référentiel, chercher la compétence principale, se rappeler qu'il y a aussi des transversales, en oublier une, et recommencer le dimanche suivant.</p>
+  <p><strong>Tu décris ton activité en une phrase.</strong> EducooO auto-détecte les attendus qu'elle travaille, chacun avec son type : la compétence principale, les transversales, les croisées. Tu regardes, tu valides. Ou tu retires celle qui ne va pas.</p>
+  <p>Ce qui te prenait une soirée par semaine te prend maintenant le temps de relire trois lignes.</p>
+</section>
+
+<section class="contraste" aria-label="Comparaison d'un rattachement vague et d'un rattachement précis">
+  <p class="contraste-source">« Lucas a réussi à réciter la comptine numérique jusqu'à 10 »</p>
+  <div class="contraste-paire">
+    <div class="contraste-cas c-vague">
+      <span class="contraste-etiquette">Un rattachement vague</span>
+      <p>S'appuyer sur ses atouts et les développer</p>
+    </div>
+    <div class="contraste-cas c-precis">
+      <span class="contraste-etiquette">Ce que l'auto-détection propose</span>
+      <p>Réciter la comptine numérique de 1 à 10</p>
+    </div>
+  </div>
+  <p class="contraste-note">Un attendu trop général se coche partout et ne prouve rien. C'est la différence entre remplir un bilan et le documenter.</p>
+</section>
+
+<div class="trio">
+  <div class="carte">
+    <div class="tuile t-sarcelle" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"/><path d="M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></svg>
+    </div>
+    <h3>Tu vérifies d'un coup d'œil</h3>
+    <p>Chaque attendu proposé arrive avec les mots exacts de ta phrase qui l'ont déclenché. Tu n'as pas à rouvrir le référentiel pour contrôler.</p>
+  </div>
+  <div class="carte">
+    <div class="tuile t-vert" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 14h3v4H7Z"/><path d="M13 9h3v9h-3Z"/></svg>
+    </div>
+    <h3>Tu vois tes trous sans les chercher</h3>
+    <p>À côté de chaque attendu, le nombre de fois où tu l'as déjà travaillé cette année. Et quand c'est zéro, il te le dit.</p>
+  </div>
+  <div class="carte">
+    <div class="tuile t-corail" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 8v5"/><path d="M12 16.5h.01"/></svg>
+    </div>
+    <h3>Tu ne corriges pas ses bêtises</h3>
+    <p>Un rendez-vous logopède n'est pas une observation d'apprentissage. Quand il n'y a rien à rattacher, il ne propose rien, au lieu de te faire perdre dix minutes à défaire une proposition absurde.</p>
+  </div>
+</div>
+
+<p class="appui">Testé sur les observations réelles d'une classe, et pas sur des exemples fabriqués : <strong>aucune compétence inventée</strong>. Chaque proposition citait les mots qui la justifiaient.</p>
+
 <div class="titre-section" id="comment">
-  <h2>Trois gestes, et c'est rangé</h2>
+  <h2>Trois gestes, et c'est fait</h2>
   <p>Le reste du temps, l'application se tait.</p>
 </div>
 
@@ -65,8 +118,8 @@
   <li>
     <span class="numero">2</span>
     <div>
-      <h3>C'est rangé</h3>
-      <p>Ton observation est rattachée aux attendus de ton référentiel. Tu valides, tu corriges, tu refuses. Rien ne se décide sans toi, et quand l'application ne sait pas, elle le dit au lieu d'inventer.</p>
+      <h3>Il auto-détecte</h3>
+      <p>Les attendus de ton référentiel que ça travaille apparaissent, chacun avec son type : la compétence principale, les transversales, les croisées. Tu valides, tu corriges, tu refuses. Rien ne se décide sans toi, et quand l'application ne sait pas, elle le dit au lieu d'inventer.</p>
     </div>
   </li>
   <li>
@@ -102,13 +155,13 @@
       <svg viewBox="0 0 24 24"><path d="M9 18h6"/><path d="M10 22h4"/><path d="M12 2a6 6 0 0 0-4 10.5V15h8v-2.5A6 6 0 0 0 12 2Z"/></svg>
     </div>
     <h3>Une idée, une activité</h3>
-    <p>Tu décris ton idée en une phrase. Les attendus du référentiel apparaissent, déjà accrochés, et l'activité se construit autour.</p>
+    <p>Tu décris ton idée en une phrase. L'auto-détection pose les attendus dessus, et l'activité se construit autour.</p>
   </div>
   <div class="carte">
     <div class="tuile t-sarcelle" aria-hidden="true">
       <svg viewBox="0 0 24 24"><path d="M4 12v8h16v-8"/><path d="M12 3v12"/><path d="M8 7l4-4 4 4"/></svg>
     </div>
-    <h3>Tu partages, c'est déjà rangé</h3>
+    <h3>Tu partages, c'est déjà rattaché</h3>
     <p>Une leçon que tu passes à une collègue arrive chez elle avec ses compétences et ses attendus. Elle n'a rien à réencoder. C'est tout le travail que personne n'a envie de refaire.</p>
   </div>
 </div>
@@ -188,7 +241,7 @@
     </div>
     <div>
       <h3>Les référentiels officiels intégrés</h3>
-      <p>Tronc commun de la Fédération Wallonie-Bruxelles pré-chargé, plus de 7 500 attendus. Rien à encoder.</p>
+      <p>Le référentiel de ton système scolaire est déjà dedans, avec ses milliers d'attendus. Rien à encoder.</p>
     </div>
   </div>
 </div>
@@ -266,7 +319,7 @@
 <section class="questions">
   <details>
     <summary>Est-ce que ça marche avec mon référentiel ?</summary>
-    <p>Le tronc commun de la Fédération Wallonie-Bruxelles est déjà chargé, plus de 7 500 attendus, tu n'as rien à encoder. L'application est construite pour accueillir d'autres référentiels : c'est même pour ça que ses couleurs codent le moment de la journée et non la matière, parce que les matières changent d'un référentiel à l'autre.</p>
+    <p>Aujourd'hui, le tronc commun de la Fédération Wallonie-Bruxelles est chargé, avec plus de sept mille attendus, et tu n'as rien à encoder. D'autres systèmes scolaires suivent. L'application est construite pour ça depuis le départ : c'est même pour cette raison que ses couleurs codent le moment de la journée et non la matière, parce que les matières changent d'un référentiel à l'autre.</p>
   </details>
   <details>
     <summary>Les leçons générées, elles valent quelque chose ?</summary>

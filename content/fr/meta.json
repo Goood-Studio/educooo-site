@@ -36,8 +36,8 @@
   },
   "accueil": {
     "gabarit": "accueil",
-    "titre": "EducooO · Tes observations rangées, tes bilans prêts",
-    "description": "Tu dictes ton observation en dix secondes. EducooO l'attache à la bonne compétence de ton référentiel, tient ton journal de classe et prépare le bilan.",
+    "titre": "EducooO · L'auto-détection des compétences de tes leçons",
+    "description": "Tu décris ta leçon en une phrase. EducooO auto-détecte les compétences qu'elle travaille, transversales comprises. Ce qui te prenait une soirée prend trois lignes.",
     "h1": "",
     "chapeau": ""
   }

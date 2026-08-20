@@ -448,3 +448,40 @@ h1, h2, h3, .phare-titre { text-wrap: balance; }
 .trio .avis { text-align: left; }
 
 
+
+/* ── Contraste vague / précis ───────────────────────────────────────────────
+   Ajouté le 19/08/2026 pour la section auto-détection. Aucune classe existante
+   n'exprimait une opposition : le duo est un simple deux-colonnes centré, et la
+   carte ne porte pas de jugement. Ici la moitié gauche doit se lire comme
+   insuffisante et la droite comme la bonne réponse. */
+.contraste {
+  background: var(--surface); border: 1px solid var(--bord);
+  border-radius: 24px; padding: 28px; margin-top: 20px;
+}
+.contraste-source {
+  font-family: var(--titre); font-weight: 800; font-size: 18px;
+  margin: 0 0 20px; text-align: center; letter-spacing: -0.01em;
+}
+.contraste-paire { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.contraste-cas { border-radius: 16px; padding: 16px 18px; }
+.contraste-cas p {
+  margin: 6px 0 0; font-family: var(--titre); font-weight: 800; font-size: 17px;
+  line-height: 1.35;
+}
+.contraste-etiquette {
+  font-size: 12px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase;
+}
+.c-vague { background: var(--fond); border: 1px solid var(--bord); }
+.c-vague .contraste-etiquette { color: var(--encre-douce); }
+.c-vague p { color: var(--encre-douce); text-decoration: line-through;
+  text-decoration-thickness: 1px; text-decoration-color: var(--bord); }
+.c-precis { background: #FFF6E8; border: 1px solid var(--miel); }
+.c-precis .contraste-etiquette { color: #8A4B12; }
+.c-precis p { color: var(--encre); }
+.contraste-note {
+  margin: 18px 0 0; text-align: center; color: var(--encre-douce); font-size: 15px;
+}
+@media (max-width: 760px) {
+  .contraste { padding: 20px; }
+  .contraste-paire { grid-template-columns: 1fr; }
+}
