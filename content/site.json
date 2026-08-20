@@ -55,15 +55,16 @@
             "libelle": "Auto-détection"
           },
           {
-            "ancre": "#vision",
-            "libelle": "Vision"
+            "ancre": "#lecons",
+            "libelle": "Leçons à volonté"
           },
           {
-            "ancre": "#questions",
-            "libelle": "Questions"
+            "ancre": "#vision",
+            "libelle": "Vision"
           }
         ],
-        "cta": "Télécharger"
+        "cta": "Télécharger",
+        "menu": "Ouvrir le menu"
       },
       "pied": {
         "accueil": "Accueil",
@@ -77,6 +78,10 @@
       "retourAccueil": "EducooO, accueil",
       "autresLangues": "Autres langues",
       "piedAncres": [
+        {
+          "ancre": "#questions",
+          "libelle": "Questions"
+        },
         {
           "ancre": "#donnees",
           "libelle": "Tes données"

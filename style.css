@@ -273,7 +273,7 @@ img { max-width: 100%; height: auto; }
   .prix-chiffre strong { font-size: 46px; }
 
   .barre-collante {
-    display: flex; gap: 10px; justify-content: center;
+    display: flex; gap: 10px; justify-content: center; align-items: center;
     position: fixed; left: 0; right: 0; bottom: 0; z-index: 10;
     padding: 10px 12px calc(10px + env(safe-area-inset-bottom));
     background: rgba(241, 240, 246, 0.92);
@@ -528,19 +528,41 @@ h1, h2, h3, .phare-titre { text-wrap: balance; }
   display: flex; flex-direction: column; gap: 14px;
   background: none; box-shadow: none; padding: 0; margin: 16px 0;
 }
-.manifeste article {
-  background: var(--surface); border: 1px solid var(--bord); border-radius: 18px;
-  padding: 20px 22px;
-  /* filet d'accent à gauche seulement : un border-image peindrait les quatre côtés */
-  box-shadow: inset 3px 0 0 var(--miel), var(--ombre);
-}
+/* Blocs centrés, sans carte : le manifeste se lit comme une histoire, et chaque
+   conviction gagne son opacité à mesure qu'elle entre dans l'écran. */
+.manifeste { gap: 56px; padding: 24px 0 8px; }
+.manifeste article { text-align: center; max-width: 30em; margin: 0 auto; }
 .manifeste h3 {
-  font-family: var(--titre); font-weight: 800; font-size: 18px;
-  margin: 0 0 8px; letter-spacing: -0.01em;
+  font-family: var(--titre); font-weight: 800;
+  font-size: clamp(21px, 4.4vw, 28px); line-height: 1.18;
+  margin: 0 0 12px; letter-spacing: -0.02em; text-wrap: balance;
 }
-.manifeste article p { margin: 0; color: var(--encre-douce); }
-.manifeste-chute { margin: 8px 0 0; padding: 0 4px; }
+.manifeste article p {
+  margin: 0; color: var(--encre-douce);
+  font-size: clamp(16.5px, 2.2vw, 18.5px); line-height: 1.62;
+}
+.manifeste-chute {
+  text-align: center; max-width: 32em; margin: 0 auto; padding-top: 8px;
+  border-top: 1px solid var(--bord);
+}
 .manifeste-chute strong { color: var(--encre); }
+
+/* La révélation au défilement se fait sans JavaScript, avec une chronologie de
+   vue. Là où ce n'est pas encore pris en charge, rien ne s'anime et tout reste
+   parfaitement lisible : c'est le repli voulu. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: view()) {
+    .manifeste article, .manifeste-chute {
+      animation: manifeste-apparait linear both;
+      animation-timeline: view();
+      animation-range: entry 8% cover 34%;
+    }
+  }
+}
+@keyframes manifeste-apparait {
+  from { opacity: 0.14; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
 
 /* ── Pièges résolus le 20/08/2026 ───────────────────────────────────────────
    Sur téléphone, la barre collante fournit déjà les deux boutons de store en
@@ -557,4 +579,38 @@ h1, h2, h3, .phare-titre { text-wrap: balance; }
   height: 38px; width: auto; display: block;
   background: #fff; border-radius: 10px; padding: 4px 9px;
   box-shadow: 0 1px 2px rgba(23, 22, 34, 0.06);
+}
+
+/* ── Menu replié sur téléphone, et un seul jeu de boutons ───────────────────
+   Ajouté le 20/08/2026. Les deux boutons de store apparaissaient dans le hero
+   ET dans la barre collante, visibles sur le même écran d'iPhone : c'était le
+   doublon signalé. La barre collante gagne, parce qu'elle reste sous le pouce
+   pendant tout le défilement. */
+.bascule-menu, .burger { display: none; }
+
+@media (max-width: 760px) {
+  .hero .badges { display: none; }
+  .hero-texte .mention { margin-top: 4px; }
+
+  .burger {
+    display: flex; flex-direction: column; justify-content: center; gap: 4px;
+    width: 40px; height: 40px; margin-left: auto; padding: 9px 8px;
+    border-radius: 12px; border: 1px solid var(--bord); background: var(--surface);
+    cursor: pointer; box-sizing: border-box;
+  }
+  .burger span { display: block; height: 2px; border-radius: 2px; background: var(--encre); }
+  .bascule-menu:focus-visible + .burger { outline: 2px solid var(--corail); outline-offset: 2px; }
+
+  .barre { position: relative; flex-wrap: wrap; }
+  .barre nav { display: none; }
+  .bascule-menu:checked ~ nav {
+    display: flex; flex-direction: column; gap: 2px;
+    order: 9; width: 100%; margin-top: 12px;
+    background: var(--surface); border: 1px solid var(--bord);
+    border-radius: 16px; padding: 8px; box-shadow: var(--ombre);
+  }
+  .bascule-menu:checked ~ nav a {
+    padding: 12px 14px; border-radius: 10px; font-size: 16px; color: var(--encre);
+  }
+  .bascule-menu:checked ~ nav a + a { border-top: 1px solid var(--bord); }
 }

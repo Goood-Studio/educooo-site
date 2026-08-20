@@ -114,10 +114,15 @@ function entete(page, langue, meta) {
     const liens = langue.barre.liens
       .map((l) => `    <a href="${l.ancre}">${echappe(l.libelle)}</a>`)
       .join('\n');
+    // Le menu se replie derrière un bouton sur téléphone. La bascule est une
+    // case à cocher masquée plutôt qu'un <details> : le comportement est
+    // déterministe dans tous les navigateurs, et le site reste sans JavaScript.
     return `<div class="barre">
   <a class="marque" href="${accueil}" aria-label="${echappe(langue.retourAccueil)}">
     <img class="signature" src="/assets/img/signature.svg" alt="EducooO" width="150" height="34">
   </a>
+  <input class="bascule-menu" type="checkbox" id="bascule-menu" aria-label="${echappe(langue.barre.menu ?? 'Menu')}">
+  <label class="burger" for="bascule-menu" aria-hidden="true"><span></span><span></span><span></span></label>
   <nav>
 ${liens}
   </nav>
