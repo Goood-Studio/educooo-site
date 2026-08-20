@@ -1,7 +1,6 @@
 {
   "domaine": "https://educooo.com",
   "nom": "EducooO",
-  "langueRacine": "fr",
   "pages": [
     "accueil",
     "confidentialite",
@@ -34,12 +33,17 @@
     "ios": "https://apps.apple.com/app/id6802792239",
     "android": "https://play.google.com/store/apps/details?id=com.gooodstudio.educooo"
   },
-  "langues": {
-    "fr": {
-      "hreflang": "fr",
-      "libelle": "Français",
+  "localeRacine": "be-fr-fwb",
+  "locales": {
+    "be-fr-fwb": {
+      "pays": "BE",
+      "langue": "fr",
+      "juridiction": "FWB",
+      "hreflang": "fr-BE",
+      "ogLocale": "fr_BE",
       "prefixe": "",
       "defaut": true,
+      "libelle": "Français",
       "slugs": {
         "accueil": "",
         "confidentialite": "confidentialite",
@@ -92,10 +96,14 @@
         }
       ]
     },
-    "nl": {
-      "hreflang": "nl",
+    "be-nl-fwb": {
+      "pays": "BE",
+      "langue": "nl",
+      "juridiction": "FWB",
+      "hreflang": "nl-BE",
+      "ogLocale": "nl_BE",
+      "prefixe": "/be-nl-fwb",
       "libelle": "Nederlands",
-      "prefixe": "/nl",
       "slugs": {
         "accueil": "",
         "confidentialite": "privacy",
@@ -137,10 +145,63 @@
       "retourAccueil": "EducooO, home",
       "autresLangues": "Andere talen"
     },
-    "en": {
+    "be-de-dg": {
+      "pays": "BE",
+      "langue": "de",
+      "juridiction": "DG",
+      "hreflang": "de-BE",
+      "ogLocale": "de_BE",
+      "prefixe": "/be-de-dg",
+      "libelle": "Deutsch",
+      "slugs": {
+        "accueil": "",
+        "confidentialite": "privacy",
+        "conditions": "voorwaarden",
+        "suppression-compte": "account-verwijderen",
+        "support": "hulp",
+        "mentions-legales": "juridische-informatie"
+      },
+      "barre": {
+        "liens": [
+          {
+            "ancre": "#comment",
+            "libelle": "Hoe het werkt"
+          },
+          {
+            "ancre": "#donnees",
+            "libelle": "Je gegevens"
+          },
+          {
+            "ancre": "#prix",
+            "libelle": "Prijs"
+          },
+          {
+            "ancre": "#questions",
+            "libelle": "Vragen"
+          }
+        ],
+        "cta": "Downloaden"
+      },
+      "pied": {
+        "accueil": "Home",
+        "confidentialite": "Privacybeleid",
+        "conditions": "Gebruiksvoorwaarden",
+        "suppression-compte": "Je account verwijderen",
+        "support": "Hulp",
+        "mentions-legales": "Juridische informatie"
+      },
+      "signature": "Gemaakt voor leerkrachten in het basisonderwijs.",
+      "retourAccueil": "EducooO, home",
+      "autresLangues": "Andere talen"
+    },
+    "be-en-fwb": {
+      "pays": "BE",
+      "langue": "en",
+      "juridiction": "FWB",
       "hreflang": "en",
+      "ogLocale": "en_GB",
+      "prefixe": "/be-en-fwb",
       "libelle": "English",
-      "prefixe": "/en",
       "slugs": {
         "accueil": "",
         "confidentialite": "privacy",

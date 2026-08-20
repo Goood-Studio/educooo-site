@@ -24,13 +24,29 @@ const gabarit = readFileSync(join(RACINE, 'layouts/base.html'), 'utf8');
 const echappe = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
-/** Les langues réellement traduites, c'est-à-dire celles qui ont un dossier. */
-const languesPresentes = Object.entries(site.langues)
-  .filter(([code]) => existsSync(join(RACINE, 'content', code, 'meta.json')))
+/**
+ * Les locales réellement traduites, c'est-à-dire celles qui ont un dossier.
+ * Une locale est le triplet pays + langue + juridiction, et non une langue :
+ * « fr » ne suffit pas, parce que le français de Belgique et celui de France
+ * ne partagent pas le référentiel. La variable « langue » plus bas porte donc
+ * une locale complète. Voir la page Notion « Architecture de contenu ».
+ */
+const localesPresentes = Object.entries(site.locales)
+  .filter(([slug]) => existsSync(join(RACINE, 'content', slug, 'meta.json')))
   .map(([code, conf]) => ({ code, ...conf }));
 
-if (!languesPresentes.some((l) => l.code === site.langueRacine)) {
-  throw new Error(`La langue racine « ${site.langueRacine} » n'a pas de contenu.`);
+if (!localesPresentes.some((l) => l.code === site.localeRacine)) {
+  throw new Error(`La locale racine « ${site.localeRacine} » n'a pas de contenu.`);
+}
+
+for (const l of localesPresentes) {
+  for (const cle of ['pays', 'langue', 'juridiction', 'hreflang', 'ogLocale']) {
+    if (!l[cle]) throw new Error(`La locale « ${l.code} » n'a pas de « ${cle} ».`);
+  }
+  const attendu = `${l.pays}-${l.langue}-${l.juridiction}`.toLowerCase();
+  if (l.code !== attendu) {
+    throw new Error(`La locale « ${l.code} » devrait s'appeler « ${attendu} » : le slug est pays-langue-juridiction.`);
+  }
 }
 
 /** Chemin public d'une page dans une langue, toujours avec un / final. */
@@ -40,13 +56,12 @@ function chemin(langue, page) {
   return `${langue.prefixe}/${slug}/`;
 }
 
-const OG_LOCALE = { fr: 'fr_BE', nl: 'nl_BE', en: 'en_GB' };
-
-function balisesHreflang(page) {
-  if (languesPresentes.length < 2) return '';
-  const lignes = languesPresentes.map((l) =>
+function balisesHreflang(page, courante) {
+  const alternates = localesPresentes.filter((l) => l.juridiction === courante.juridiction);
+  if (alternates.length < 2) return '';
+  const lignes = alternates.map((l) =>
     `<link rel="alternate" hreflang="${l.hreflang}" href="${site.domaine}${chemin(l, page)}">`);
-  const defaut = languesPresentes.find((l) => l.defaut) ?? languesPresentes[0];
+  const defaut = alternates.find((l) => l.defaut) ?? alternates[0];
   lignes.push(`<link rel="alternate" hreflang="x-default" href="${site.domaine}${chemin(defaut, page)}">`);
   return lignes.join('\n');
 }
@@ -150,7 +165,10 @@ function pied(page, langue) {
       .map(([p, libelle]) => `<a href="${chemin(langue, p)}">${echappe(libelle)}</a>`),
   ].join('\n    ');
 
-  const autres = languesPresentes.filter((l) => l.code !== langue.code);
+  // Même juridiction seulement : proposer une autre juridiction ferait croire à
+  // une traduction alors que ce serait un autre référentiel.
+  const autres = localesPresentes.filter(
+    (l) => l.code !== langue.code && l.juridiction === langue.juridiction);
   const bascule = autres.length
     ? `\n  <p class="langues">${echappe(langue.autresLangues)} : ` +
       autres.map((l) => `<a href="${chemin(l, page)}" hreflang="${l.hreflang}">${echappe(l.libelle)}</a>`).join(' · ') +
@@ -264,8 +282,8 @@ function rendu(page, langue, metas) {
     description: echappe(meta.description),
     canonical: site.domaine + chemin(langue, page),
     domaine: site.domaine,
-    ogLocale: OG_LOCALE[langue.code] ?? langue.hreflang,
-    hreflang: balisesHreflang(page),
+    ogLocale: langue.ogLocale,
+    hreflang: balisesHreflang(page, langue),
     jsonld: jsonld(page, langue, meta),
     classeMain: meta.gabarit === 'accueil' ? 'large' : '',
     entete: entete(page, langue, meta),
@@ -295,7 +313,7 @@ cpSync(join(RACINE, 'style.css'), join(SORTIE, 'style.css'));
 
 const urls = [];
 
-for (const langue of languesPresentes) {
+for (const langue of localesPresentes) {
   const metas = JSON.parse(readFileSync(join(RACINE, 'content', langue.code, 'meta.json'), 'utf8'));
   for (const page of site.pages) {
     const html = rendu(page, langue, metas);
@@ -310,7 +328,7 @@ for (const langue of languesPresentes) {
 // 404 : servie par GitHub Pages sur toute adresse inconnue, donc toujours en
 // langue racine et jamais indexée.
 {
-  const racine = languesPresentes.find((l) => l.code === site.langueRacine);
+  const racine = localesPresentes.find((l) => l.code === site.localeRacine);
   const metas = JSON.parse(readFileSync(join(RACINE, 'content', racine.code, 'meta.json'), 'utf8'));
   const liens = Object.entries(racine.pied)
     .map(([p, libelle]) => `    <li><a href="${chemin(racine, p)}">${libelle}</a></li>`).join('\n');
@@ -344,10 +362,12 @@ ${liens}
   void metas;
 }
 
-// sitemap.xml : toutes les langues, avec les alternates, ce que Google préfère.
-const entrees = urls.map(({ url, page }) => {
-  const alt = languesPresentes.length > 1
-    ? languesPresentes.map((l) =>
+// sitemap.xml : toutes les locales, avec leurs alternates. Même règle que les
+// balises du <head> : une page n'a d'alternates que dans sa propre juridiction.
+const entrees = urls.map(({ url, page, langue }) => {
+  const memeJuridiction = localesPresentes.filter((l) => l.juridiction === langue.juridiction);
+  const alt = memeJuridiction.length > 1
+    ? memeJuridiction.map((l) =>
         `\n    <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${site.domaine}${chemin(l, page)}"/>`).join('')
     : '';
   const priorite = page === 'accueil' ? '1.0' : (page === 'mentions-legales' ? '0.3' : '0.7');
@@ -365,7 +385,7 @@ writeFileSync(join(SORTIE, 'robots.txt'),
 
 // llms.txt : ce qu'un assistant doit savoir s'il résume EducooO. Même logique
 // que sur vroooz.com.
-const racineL = languesPresentes.find((l) => l.code === site.langueRacine);
+const racineL = localesPresentes.find((l) => l.code === site.localeRacine);
 writeFileSync(join(SORTIE, 'llms.txt'), `# ${site.nom}
 
 > Application mobile pour enseignantes du fondamental. Elle capte une observation
@@ -389,8 +409,8 @@ ${site.pages.filter((p) => p !== 'accueil').map((p) =>
 
 writeFileSync(join(SORTIE, 'CNAME'), site.domaine.replace(/^https?:\/\//, '') + '\n');
 
-console.log(`\n${urls.length} pages, ${languesPresentes.length} langue(s) : ${languesPresentes.map((l) => l.code).join(', ')}`);
+console.log(`\n${urls.length} pages, ${localesPresentes.length} locale(s) : ${localesPresentes.map((l) => l.code).join(', ')}`);
 console.log(`Langues déclarées mais pas encore traduites : ${
-  Object.keys(site.langues).filter((c) => !languesPresentes.some((l) => l.code === c)).join(', ') || 'aucune'}`);
+  Object.keys(site.locales).filter((c) => !localesPresentes.some((l) => l.code === c)).join(', ') || 'aucune'}`);
 console.log(`Sortie : ${SORTIE}`);
 void readdirSync;
