@@ -7,6 +7,7 @@
     "conditions",
     "suppression-compte",
     "support",
+    "presse",
     "mentions-legales"
   ],
   "editeur": {
@@ -50,6 +51,7 @@
         "conditions": "conditions",
         "suppression-compte": "suppression-compte",
         "support": "support",
+        "presse": "presse",
         "mentions-legales": "mentions-legales"
       },
       "barre": {
@@ -76,6 +78,7 @@
         "conditions": "Conditions d'utilisation",
         "suppression-compte": "Supprimer ton compte",
         "support": "Support",
+        "presse": "Espace presse",
         "mentions-legales": "Mentions légales"
       },
       "signature": "Fait pour les enseignant·es du fondamental, en {{juridiction}}.",

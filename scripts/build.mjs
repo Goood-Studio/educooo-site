@@ -57,7 +57,11 @@ function chemin(langue, page) {
 }
 
 function balisesHreflang(page, courante) {
-  const alternates = localesPresentes.filter((l) => l.juridiction === courante.juridiction);
+  // Une page n'a d'alternate que dans les locales qui la déclarent vraiment.
+  // La presse existe d'abord en français seulement : pointer un hreflang vers un
+  // /be-nl-fwb/presse/ inexistant serait une promesse de traduction non tenue.
+  const alternates = localesPresentes.filter(
+    (l) => l.juridiction === courante.juridiction && page in l.slugs);
   if (alternates.length < 2) return '';
   const lignes = alternates.map((l) =>
     `<link rel="alternate" hreflang="${l.hreflang}" href="${site.domaine}${chemin(l, page)}">`);
@@ -168,7 +172,7 @@ function pied(page, langue) {
   // Même juridiction seulement : proposer une autre juridiction ferait croire à
   // une traduction alors que ce serait un autre référentiel.
   const autres = localesPresentes.filter(
-    (l) => l.code !== langue.code && l.juridiction === langue.juridiction);
+    (l) => l.code !== langue.code && l.juridiction === langue.juridiction && page in l.slugs);
   const bascule = autres.length
     ? `\n  <p class="langues">${echappe(langue.autresLangues)} : ` +
       autres.map((l) => `<a href="${chemin(l, page)}" hreflang="${l.hreflang}">${echappe(l.libelle)}</a>`).join(' · ') +
@@ -322,6 +326,10 @@ const urls = [];
 for (const langue of localesPresentes) {
   const metas = JSON.parse(readFileSync(join(RACINE, 'content', langue.code, 'meta.json'), 'utf8'));
   for (const page of site.pages) {
+    // Une page ne se génère que pour les locales qui la déclarent. La presse est
+    // en français d'abord : son absence de slug en néerlandais la saute proprement
+    // au lieu de faire échouer la construction sur un contenu manquant.
+    if (!(page in langue.slugs)) continue;
     const html = rendu(page, langue, metas);
     const dest = join(SORTIE, chemin(langue, page));
     mkdirSync(dest, { recursive: true });
@@ -371,7 +379,8 @@ ${liens}
 // sitemap.xml : toutes les locales, avec leurs alternates. Même règle que les
 // balises du <head> : une page n'a d'alternates que dans sa propre juridiction.
 const entrees = urls.map(({ url, page, langue }) => {
-  const memeJuridiction = localesPresentes.filter((l) => l.juridiction === langue.juridiction);
+  const memeJuridiction = localesPresentes.filter(
+    (l) => l.juridiction === langue.juridiction && page in l.slugs);
   const alt = memeJuridiction.length > 1
     ? memeJuridiction.map((l) =>
         `\n    <xhtml:link rel="alternate" hreflang="${l.hreflang}" href="${site.domaine}${chemin(l, page)}"/>`).join('')

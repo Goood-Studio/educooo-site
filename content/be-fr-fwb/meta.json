@@ -27,6 +27,13 @@
     "h1": "Support",
     "chapeau": "Une petite équipe, mais tu tombes sur une vraie personne."
   },
+  "presse": {
+    "gabarit": "document",
+    "titre": "Espace presse · EducooO",
+    "description": "Dossier de presse d'EducooO : l'app qui rend aux enseignant·es le temps volé par la paperasse. Faits clés, visuels et kit média à télécharger.",
+    "h1": "Espace presse",
+    "chapeau": "Faits clés, visuels et contact pour la presse. Édité par Goood Studio."
+  },
   "mentions-legales": {
     "gabarit": "document",
     "titre": "Mentions légales · EducooO",

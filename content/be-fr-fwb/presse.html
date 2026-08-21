@@ -1,0 +1,264 @@
+<style>
+/* Styles propres à l'espace presse : le gabarit ne connaît ni les cartes
+   d'étapes numérotées ni la grille de téléchargement du kit média. Tout est
+   préfixé « presse- » pour rester sans effet sur les autres pages. */
+.presse-etape { margin: 0; }
+.presse-num {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--titre); font-weight: 800; font-size: 13px;
+  letter-spacing: 0.04em; text-transform: uppercase;
+  background: var(--action); -webkit-background-clip: text; background-clip: text;
+  color: transparent;
+}
+.presse-cloudy { display: flex; gap: 20px; align-items: center; }
+.presse-cloudy img {
+  flex: 0 0 120px; width: 120px; height: auto; border-radius: 20px;
+  box-shadow: var(--ombre);
+}
+.presse-cloudy p { margin: 0; }
+.presse-apercu { border-radius: 20px; box-shadow: var(--ombre); display: block; margin: 12px 0 6px; width: 100%; }
+.presse-kit { display: flex; flex-direction: column; gap: 14px; }
+.presse-groupe h3 { margin: 0 0 12px; }
+.presse-tel { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+.presse-tel a {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  gap: 8px; text-decoration: none; color: var(--encre);
+  background: var(--fond); border: 1px solid var(--bord); border-radius: 16px;
+  padding: 14px 10px; transition: transform .12s ease, box-shadow .12s ease;
+}
+.presse-tel a:hover { transform: translateY(-2px); box-shadow: var(--ombre); }
+.presse-tel img { width: 100%; max-width: 96px; height: auto; border-radius: 12px; }
+.presse-tel .presse-nom { font-family: var(--titre); font-weight: 800; font-size: 14px; line-height: 1.25; }
+.presse-tel .presse-format { font-size: 12px; color: var(--encre-douce); }
+.presse-tout { text-align: center; margin: 6px 0 0; }
+.presse-contact {
+  background: var(--surface); border-radius: 24px; padding: 28px;
+  box-shadow: var(--ombre-haute); border-top: 4px solid transparent;
+  border-image: var(--action) 1; border-image-slice: 1;
+  border-width: 4px 0 0 0; border-style: solid; text-align: center; margin: 24px 0;
+}
+.presse-contact h2 { margin: 0 0 8px; }
+.presse-contact p { margin: 0; }
+@media (max-width: 760px) {
+  .presse-tel { grid-template-columns: 1fr 1fr; }
+  .presse-cloudy { flex-direction: column; text-align: center; }
+  .presse-cloudy img { flex: 0 0 auto; }
+}
+</style>
+
+<section>
+  <p class="sur-titre">Moins de paperasse, c'est la classe</p>
+  <p>EducooO rend aux enseignant·es du fondamental le temps volé par la paperasse. Une application mobile qui transforme une observation dictée en dix secondes en un suivi des compétences prêt pour l'inspection. L'enseignant·e observe ses élèves, l'application s'occupe du référentiel.</p>
+</section>
+
+<div class="titre-section">
+  <h2>En bref</h2>
+</div>
+
+<section>
+  <p>EducooO est une application pour les enseignant·es du fondamental, maternelle et primaire, en Belgique francophone. On y capte une observation d'un mot, à la voix, même sans réseau. Cloudy, la mascotte de l'application, la rattache toute seule aux attendus du référentiel de la Fédération Wallonie-Bruxelles. Et l'enseignant·e voit d'un coup d'œil où en est son programme. Édité par Goood Studio.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Le problème</h2>
+</div>
+
+<section>
+  <p>Le suivi des compétences est devenu un second métier. Le référentiel de la Fédération Wallonie-Bruxelles compte plus de <strong>7 000 attendus</strong>. Tenir son journal de classe, cocher, retrouver le bon libellé, préparer la passation de juin, prouver sa couverture à l'inspection : autant d'heures prises le soir, loin des élèves. La plupart des outils demandent de <em>chercher</em> dans le référentiel. C'est là qu'ils perdent les enseignant·es.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Comment ça marche</h2>
+</div>
+
+<div class="trio">
+  <div class="carte presse-etape">
+    <p class="presse-num">1 · Capte</p>
+    <h3>En un mot</h3>
+    <p>Tu dictes « Zoé a compté jusqu'à douze toute seule ». La reconnaissance se fait sur le téléphone, même sans réseau.</p>
+  </div>
+  <div class="carte presse-etape">
+    <p class="presse-num">2 · Cloudy range</p>
+    <h3>Sans que tu cherches</h3>
+    <p>L'application retrouve seule les attendus du référentiel que ça travaille, cite tes mots comme preuve, et te laisse corriger.</p>
+  </div>
+  <div class="carte presse-etape">
+    <p class="presse-num">3 · Prouve</p>
+    <h3>D'un coup d'œil</h3>
+    <p>Ta couverture du programme, ce qui reste, ce qui est à consolider. De quoi répondre à l'inspection ou à un parent sans t'y replonger.</p>
+  </div>
+</div>
+
+<div class="titre-section">
+  <h2>Ce qui distingue EducooO</h2>
+</div>
+
+<section>
+  <ul>
+    <li><strong>L'auto-détection, pas la recherche.</strong> Personne ne devrait affronter 7 000 attendus à la main : c'est le travail de la machine, pas de l'enseignant·e.</li>
+    <li><strong>La confidentialité des enfants, prise au sérieux</strong>, un parti pris rare dans l'edtech.</li>
+    <li><strong>Pas de classement, pas de gamification toxique.</strong> On partage des leçons entre collègues, jamais un palmarès. « Plus de séances clôturées » n'est pas un but, et en faire un score abîmerait la donnée sur laquelle l'enseignant·e s'appuie.</li>
+    <li><strong>Un ton, une présence.</strong> Cloudy accompagne sans infantiliser. L'application parle comme une collègue, pas comme une inspectrice.</li>
+  </ul>
+</section>
+
+<div class="titre-section" id="confidentialite">
+  <h2>La confidentialité, prise au sérieux</h2>
+  <p>EducooO note des choses sur des enfants. Les partis pris sont donc explicites, et vérifiables.</p>
+</div>
+
+<section>
+  <ul class="liste-nue">
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Les prénoms ne partent jamais vers l'IA.</strong> Ils sont remplacés au plus bas niveau du code avant tout envoi, et l'envoi est refusé s'il en reste un.</span></li>
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><strong>La dictée se fait sur le téléphone</strong> par défaut : la voix ne quitte pas l'appareil.</span></li>
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Les données sont hébergées dans l'Union européenne.</strong> Aucune publicité, aucun traceur, aucun outil de mesure d'audience.</span></li>
+    <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span><strong>Tout est effaçable</strong> depuis l'application, sans écrire à personne.</span></li>
+  </ul>
+</section>
+
+<p class="appui">Notre politique de confidentialité décrit le fonctionnement réel de l'application, prestataire par prestataire. <a href="{{lien:confidentialite}}">Lis-la en entier</a>.</p>
+
+<div class="titre-section">
+  <h2>Cloudy, la mascotte</h2>
+</div>
+
+<section>
+  <div class="presse-cloudy">
+    <img src="/assets/presse/apercus/cloudy-chapeau.png" alt="Cloudy, la mascotte d'EducooO, coiffée d'un chapeau de diplômé" width="120" height="120" loading="lazy">
+    <p>Cloudy est un petit nuage à visage, compagnon de l'application. Ni l'enseignant·e, ni un enfant : c'est ce qui évite l'infantilisation. Coiffée du chapeau de diplômé multicolore, elle est aussi le logo et l'icône d'EducooO.</p>
+  </div>
+</section>
+
+<div class="titre-section">
+  <h2>La vision</h2>
+</div>
+
+<section>
+  <blockquote class="carte" style="border-left:4px solid #FF7A59;border-radius:0 16px 16px 0">
+    <p style="font-size:1.25rem;font-style:italic;line-height:1.5;margin:0">« J'ai appris à lire, à écrire et à compter à des enfants qui n'étaient censés ne plus jamais rien apprendre. Sans aucune pression, avec toute la créativité possible. »</p>
+    <cite style="display:block;margin-top:12px;font-style:normal;font-weight:700">Stéphane Jalhay, instituteur, à l'origine d'EducooO</cite>
+  </blockquote>
+</section>
+
+<div class="titre-section">
+  <h2>Aperçu de l'application</h2>
+</div>
+
+<section>
+  <img class="presse-apercu" src="/assets/presse/educooo-apercu-ecrans.jpg" alt="Deux écrans réels d'EducooO : l'accueil « programme » et la capture vocale d'une observation" width="1200" height="750" loading="lazy">
+  <p class="mention">Écrans réels de l'application, l'accueil « programme » et la capture vocale. Captures haute définition dans le kit média ci-dessous.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Faits clés</h2>
+</div>
+
+<section>
+  <table>
+    <tr><th>Nom</th><td>EducooO, avec un O final en capitale</td></tr>
+    <tr><th>Catégorie</th><td>Éducation · outil pour enseignant·es du fondamental</td></tr>
+    <tr><th>Plateformes</th><td>iOS et Android</td></tr>
+    <tr><th>Territoire de lancement</th><td>Belgique francophone, référentiel de la Fédération Wallonie-Bruxelles</td></tr>
+    <tr><th>Disponibilité</th><td>le 24 août 2026, sur iOS et Android</td></tr>
+    <tr><th>Modèle</th><td>Abonnement « EducooO GO! » : un mois offert à tout le monde, puis 59,99 € par an</td></tr>
+    <tr><th>Éditeur</th><td>Goood Studio</td></tr>
+    <tr><th>Site</th><td>educooo.com</td></tr>
+  </table>
+</section>
+
+<div class="titre-section" id="kit">
+  <h2>Kit média</h2>
+  <p>Logo, icône, rendus de Cloudy et captures d'écran haute définition, libres pour tout usage éditorial sur EducooO.</p>
+</div>
+
+<div class="presse-kit">
+  <section class="presse-groupe">
+    <h3>Logo et icône</h3>
+    <div class="presse-tel">
+      <a href="/assets/presse/educooo-icone.png" download>
+        <img src="/assets/presse/apercus/educooo-icone.png" alt="Icône d'EducooO">
+        <span class="presse-nom">Icône EducooO</span>
+        <span class="presse-format">PNG · 1024 px</span>
+      </a>
+      <a href="/assets/presse/logo/cloudy-lockup-h-clair-2000.png" download>
+        <img src="/assets/presse/logo/cloudy-lockup-h-clair-2000.png" alt="Logo EducooO horizontal">
+        <span class="presse-nom">Logo horizontal</span>
+        <span class="presse-format">PNG · 2000 px</span>
+      </a>
+      <a href="/assets/presse/logo/cloudy-marque-transparent-1024.png" download>
+        <img src="/assets/presse/logo/cloudy-marque-transparent-1024.png" alt="Marque Cloudy sur fond transparent">
+        <span class="presse-nom">Marque Cloudy</span>
+        <span class="presse-format">PNG transparent · 1024 px</span>
+      </a>
+      <a href="/assets/presse/logo/cloudy-og-1200x630.png" download>
+        <img src="/assets/presse/logo/cloudy-og-1200x630.png" alt="Image de partage EducooO">
+        <span class="presse-nom">Image sociale</span>
+        <span class="presse-format">PNG · 1200 × 630</span>
+      </a>
+    </div>
+    <p class="presse-tout"><a class="bouton" href="/assets/presse/kit-logo-educooo.zip" download>Kit logo complet (.zip)</a></p>
+  </section>
+
+  <section class="presse-groupe">
+    <h3>Écrans de l'application</h3>
+    <div class="presse-tel">
+      <a href="/assets/presse/educooo-apercu-ecrans.jpg" download>
+        <img src="/assets/presse/educooo-apercu-ecrans.jpg" alt="Aperçu de deux écrans de l'application">
+        <span class="presse-nom">Aperçu des écrans</span>
+        <span class="presse-format">JPG haute définition</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="presse-groupe">
+    <h3>Témoin produit</h3>
+    <div class="presse-tel">
+      <a href="/assets/presse/educooo-temoin.jpg" download>
+        <img src="/assets/presse/apercus/educooo-temoin.jpg" alt="Visuel témoin d'EducooO">
+        <span class="presse-nom">Visuel témoin</span>
+        <span class="presse-format">JPG haute définition</span>
+      </a>
+    </div>
+  </section>
+
+  <section class="presse-groupe">
+    <h3>Mascotte Cloudy</h3>
+    <div class="presse-tel">
+      <a href="/assets/presse/cloudy-chapeau.png" download>
+        <img src="/assets/presse/apercus/cloudy-chapeau.png" alt="Cloudy avec le chapeau de diplômé">
+        <span class="presse-nom">Cloudy, chapeau</span>
+        <span class="presse-format">PNG · 2048 px</span>
+      </a>
+      <a href="/assets/presse/cloudy-neutre.png" download>
+        <img src="/assets/presse/apercus/cloudy-neutre.png" alt="Cloudy, expression neutre">
+        <span class="presse-nom">Cloudy, neutre</span>
+        <span class="presse-format">PNG · 2048 px</span>
+      </a>
+      <a href="/assets/presse/cloudy-celebration.png" download>
+        <img src="/assets/presse/apercus/cloudy-celebration.png" alt="Cloudy en train de fêter">
+        <span class="presse-nom">Cloudy, fête</span>
+        <span class="presse-format">PNG · 2048 px</span>
+      </a>
+      <a href="/assets/presse/cloudy-salut.png" download>
+        <img src="/assets/presse/apercus/cloudy-salut.png" alt="Cloudy qui salue">
+        <span class="presse-nom">Cloudy, salut</span>
+        <span class="presse-format">PNG · 2048 px</span>
+      </a>
+      <a href="/assets/presse/cloudy-micro.png" download>
+        <img src="/assets/presse/apercus/cloudy-micro.png" alt="Cloudy avec un micro">
+        <span class="presse-nom">Cloudy, micro</span>
+        <span class="presse-format">PNG · 2048 px</span>
+      </a>
+    </div>
+  </section>
+
+  <p class="presse-tout"><a class="bouton" href="/assets/presse/kit-presse-educooo.zip" download>Tout télécharger</a></p>
+</div>
+
+<div class="presse-contact">
+  <h2>Contact presse</h2>
+  <p>Interviews, démonstration et visuels sur demande.<br>
+  <a href="mailto:info@educooo.com">info@educooo.com</a> · educooo.com</p>
+</div>
+
+<p class="appui"><strong>À propos de Goood Studio.</strong> Goood Studio conçoit des produits utiles et honnêtes, au service de celles et ceux qui font un vrai métier. EducooO est l'un d'eux.</p>
