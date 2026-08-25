@@ -340,12 +340,22 @@ for (const langue of localesPresentes) {
 }
 
 // 404 : servie par GitHub Pages sur toute adresse inconnue, donc toujours en
-// langue racine et jamais indexée.
+// langue racine et jamais indexée. Elle porte AUSSI le funnel de parrainage :
+// les liens `educooo.com/r/CODE` n'existent pas comme fichiers, donc GitHub Pages
+// sert cette page pour eux. Un script détecte le préfixe /r/, compte le clic via
+// l'edge function (le web anonyme ne peut pas écrire dans referral_events), montre
+// le code à saisir à l'inscription, et propose les deux stores. On ne redirige
+// pas d'office : sans deep link différé, l'attribution tient à ce que la personne
+// VOIE son code avant d'aller sur le store.
 {
   const racine = localesPresentes.find((l) => l.code === site.localeRacine);
   const metas = JSON.parse(readFileSync(join(RACINE, 'content', racine.code, 'meta.json'), 'utf8'));
   const liens = Object.entries(racine.pied)
     .map(([p, libelle]) => `    <li><a href="${chemin(racine, p)}">${libelle}</a></li>`).join('\n');
+  const parr = site.parrainage ?? {};
+  if (!parr.fonctionClic) throw new Error('site.json : parrainage.fonctionClic manquant (URL de l\'edge function de comptage des clics).');
+  const badgeIos = `<a class="badge" href="${site.app.ios}"><img src="/assets/img/badge-app-store.svg" alt="Télécharger dans l'App Store" width="127" height="40"></a>`;
+  const badgePlay = `<a class="badge badge-play" href="${site.app.android}"><img src="/assets/img/badge-google-play.png" alt="Disponible sur Google Play" width="135" height="52"></a>`;
   writeFileSync(join(SORTIE, '404.html'), sansCadratin(`<!doctype html>
 <html lang="${racine.hreflang}">
 <head>
@@ -355,9 +365,43 @@ for (const langue of localesPresentes) {
 <meta name="robots" content="noindex">
 <link rel="icon" href="/assets/img/favicon.ico" sizes="any">
 <link rel="stylesheet" href="/style.css">
+<style>
+  #parrainage { display: none; }
+  html.est-parrainage #introuvable { display: none; }
+  html.est-parrainage #parrainage { display: block; }
+  .code-parrainage { display: inline-block; font-weight: 800; letter-spacing: .12em;
+    font-size: 1.6rem; padding: .5rem 1rem; border-radius: 14px;
+    background: #D5CFF3; color: #2b2350; margin: .4rem 0 1rem; }
+  #parrainage .badges { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: .5rem; }
+  #parrainage.plateforme-ios .badge-play, #parrainage.plateforme-android .badge:not(.badge-play) { order: 2; }
+</style>
+<script>
+  (function () {
+    var chemin = location.pathname || '';
+    if (chemin.indexOf('/r/') !== 0) return;
+    document.documentElement.className += ' est-parrainage';
+    var brut = '';
+    try { brut = decodeURIComponent(chemin.slice(3)).split('/')[0].trim().toUpperCase(); } catch (e) {}
+    var code = /^[ABCDEFGHJKMNPQRSTUVWXYZ23456789]{4,12}$/.test(brut) ? brut : '';
+    window.__codeParrainage = code;
+    if (code) {
+      try {
+        fetch(${JSON.stringify(parr.fonctionClic)}, {
+          method: 'POST', keepalive: true,
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ code: code })
+        }).catch(function () {});
+      } catch (e) {}
+    }
+    var ua = navigator.userAgent || '';
+    window.__plateforme = /android/i.test(ua) ? 'android'
+      : /iphone|ipad|ipod/i.test(ua) ? 'ios' : 'autre';
+  })();
+</script>
 </head>
 <body>
 <main>
+<div id="introuvable">
 <header>
   <a class="marque" href="/">Educoo<span>O</span></a>
   <h1>Cette page n'existe pas</h1>
@@ -369,7 +413,35 @@ for (const langue of localesPresentes) {
 ${liens}
   </ul>
 </section>
+</div>
+<div id="parrainage">
+<header>
+  <a class="marque" href="/">Educoo<span>O</span></a>
+  <h1>Une collègue t'offre EducooO</h1>
+  <p class="date">Installe l'app et saisis ton code à l'inscription pour tes 5 € de remise.</p>
+</header>
+<section class="centre">
+  <p>Ton code de parrainage</p>
+  <p><span class="code-parrainage" id="valeur-code">ton code</span></p>
+  <div class="badges">
+    ${badgeIos}
+    ${badgePlay}
+  </div>
+  <p class="date">Note ton code : tu le saisiras à la création de ton compte, dans l'app.</p>
+</section>
+</div>
 </main>
+<script>
+  (function () {
+    var code = window.__codeParrainage;
+    var el = document.getElementById('valeur-code');
+    if (el && code) el.textContent = code;
+    var bloc = document.getElementById('parrainage');
+    if (bloc && window.__plateforme && window.__plateforme !== 'autre') {
+      bloc.className = 'plateforme-' + window.__plateforme;
+    }
+  })();
+</script>
 </body>
 </html>
 `, '404.html'));
