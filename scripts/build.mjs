@@ -308,7 +308,7 @@ function rendu(page, langue, metas) {
   const restants = html.match(/\{\{[a-zA-Z][a-zA-Z0-9:_-]*\}\}/g);
   if (restants) throw new Error(`Marqueurs non remplacés : ${[...new Set(restants)].join(', ')}`);
   const propre = sansCadratin(html.replace(/\n{3,}/g, '\n\n'), `${page} en ${langue.code}`);
-  if (meta.gabarit === 'document' && langue.code === 'fr') {
+  if (meta.gabarit === 'document' && langue.langue === 'fr') {
     return sansFemininGenerique(propre, `${page} en ${langue.code}`);
   }
   return propre;
