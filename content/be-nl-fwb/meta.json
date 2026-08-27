@@ -1,0 +1,44 @@
+{
+  "confidentialite": {
+    "gabarit": "document",
+    "titre": "Privacybeleid · EducooO",
+    "description": "Wat wordt opgeslagen, waar, hoelang en wie er nog bij kan. De echte werking van EducooO, dienstverlener per dienstverlener.",
+    "h1": "Privacybeleid",
+    "chapeau": "Versie 1.0, van kracht op 18 augustus 2026. Uitgegeven door Goood Studio SRL."
+  },
+  "conditions": {
+    "gabarit": "document",
+    "titre": "Gebruiksvoorwaarden · EducooO",
+    "description": "De gebruiksregels van EducooO: je account, het abonnement van 59,99 € per jaar, wat van jou is en waar wij voor instaan.",
+    "h1": "Gebruiksvoorwaarden",
+    "chapeau": "Versie 1.1, van kracht op 19 augustus 2026. Uitgegeven door Goood Studio SRL."
+  },
+  "suppression-compte": {
+    "gabarit": "document",
+    "titre": "Je account verwijderen · EducooO",
+    "description": "Hoe je je EducooO-account met twee tikken verwijdert, wat er wordt gewist, binnen welke termijn, en wat je met je abonnement doet.",
+    "h1": "Je account verwijderen",
+    "chapeau": "Pagina vereist door Google Play en App Store Connect."
+  },
+  "support": {
+    "gabarit": "document",
+    "titre": "Hulp · EducooO",
+    "description": "Hoe je ons bereikt, wat we voor je kunnen doen en binnen welke termijn.",
+    "h1": "Hulp",
+    "chapeau": "Een klein team, maar je krijgt een echt mens aan de lijn."
+  },
+  "mentions-legales": {
+    "gabarit": "document",
+    "titre": "Juridische informatie · EducooO",
+    "description": "Uitgever, host en contactgegevens van EducooO.",
+    "h1": "Juridische informatie",
+    "chapeau": "Bijgewerkt op 19 augustus 2026."
+  },
+  "accueil": {
+    "gabarit": "accueil",
+    "titre": "EducooO · Automatische detectie van de competenties in je lessen",
+    "description": "Je beschrijft je les in één zin. EducooO detecteert de competenties die je aanpakt, ook de transversale. Wat een avond kostte, kost nu drie regels.",
+    "h1": "",
+    "chapeau": ""
+  }
+}
