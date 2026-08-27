@@ -41,6 +41,13 @@
     "h1": "Mentions légales",
     "chapeau": "Mises à jour le 19 août 2026."
   },
+  "direction": {
+    "gabarit": "document",
+    "titre": "EducooO pour les directions · Piloter sans surveiller",
+    "description": "La version établissement d'EducooO donne à la direction une vue agrégée et anonymisée de la couverture des compétences. Aucune observation nominative.",
+    "h1": "Piloter la progression de votre établissement sans surveiller personne",
+    "chapeau": "La version établissement d'EducooO, pour les directions d'école fondamentale."
+  },
   "accueil": {
     "gabarit": "accueil",
     "titre": "EducooO · L'auto-détection des compétences de tes leçons",
