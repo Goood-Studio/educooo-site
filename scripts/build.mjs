@@ -221,9 +221,9 @@ ${identite}${bascule}
  * choisit le slug de la langue en cours.
  */
 function liensInternes(html, langue) {
-  // Les deux URL des stores ne s'écrivent pas en dur dans le contenu : elles
-  // vivent dans site.json, à un seul endroit, parce qu'elles changeront.
-  const avecStores = html.replace(/\{\{app:(ios|android)\}\}/g, (_, plateforme) => {
+  // Les URL des stores et de l'app web ne s'écrivent pas en dur dans le contenu :
+  // elles vivent dans site.json, à un seul endroit, parce qu'elles changeront.
+  const avecStores = html.replace(/\{\{app:(ios|android|web)\}\}/g, (_, plateforme) => {
     const url = site.app[plateforme];
     if (!url) throw new Error(`Lien de téléchargement manquant dans site.json : app.${plateforme}`);
     return url;
