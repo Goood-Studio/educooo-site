@@ -145,7 +145,10 @@ function entete(page, langue, meta) {
   <nav>
 ${liens}
   </nav>
-  <a class="bouton-barre" href="#telecharger">${echappe(langue.barre.cta)}</a>
+  <div class="barre-actions">${site.app.web && langue.barre.connexion ? `
+    <a class="bouton-connexion" href="${site.app.web}">${echappe(langue.barre.connexion)}</a>` : ''}
+    <a class="bouton-barre" href="#telecharger">${echappe(langue.barre.cta)}</a>
+  </div>
 </div>`;
   }
   const chapeau = meta.chapeau ? `\n  <p class="date">${meta.chapeau}</p>` : '';
@@ -198,8 +201,15 @@ function pied(page, langue) {
     ? `  <p>${echappe(signature)}</p>`
     : `  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>\n  <a href="mailto:${e.email}">${e.email}</a></p>`;
 
+  // Accès web en bas de page : une école qui découvre le site sur ordinateur
+  // peut se connecter directement, sans passer par un store. Bouton discret,
+  // au-dessus des liens du pied.
+  const connexionBloc = site.app.web && langue.barre?.connexion
+    ? `  <p class="pied-connexion"><a class="bouton-connexion" href="${site.app.web}">${echappe(langue.barre.connexion)}</a></p>\n`
+    : '';
+
   return `<footer${classe}>
-${bloc}
+${connexionBloc}${bloc}
 ${identite}${bascule}
 </footer>`;
 }

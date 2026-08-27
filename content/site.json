@@ -33,7 +33,8 @@
     "periode": "P1Y",
     "essai": "P1M",
     "ios": "https://apps.apple.com/app/id6802792239",
-    "android": "https://play.google.com/store/apps/details?id=com.gooodstudio.educooo"
+    "android": "https://play.google.com/store/apps/details?id=com.gooodstudio.educooo",
+    "web": "https://app.educooo.com"
   },
   "parrainage": {
     "fonctionClic": "https://biqyqjvmyfhgvhbtohvv.supabase.co/functions/v1/clic-parrainage"
@@ -75,6 +76,7 @@
           }
         ],
         "cta": "Télécharger",
+        "connexion": "Connexion",
         "menu": "Ouvrir le menu"
       },
       "pied": {
@@ -141,7 +143,8 @@
             "libelle": "Vragen"
           }
         ],
-        "cta": "Downloaden"
+        "cta": "Downloaden",
+        "connexion": "Aanmelden"
       },
       "pied": {
         "accueil": "Home",
@@ -188,6 +191,7 @@
           }
         ],
         "cta": "Herunterladen",
+        "connexion": "Anmelden",
         "menu": "Menü öffnen"
       },
       "pied": {
@@ -252,7 +256,8 @@
             "libelle": "Questions"
           }
         ],
-        "cta": "Download"
+        "cta": "Download",
+        "connexion": "Log in"
       },
       "pied": {
         "accueil": "Home",
