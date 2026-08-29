@@ -24,6 +24,12 @@ const gabarit = readFileSync(join(RACINE, 'layouts/base.html'), 'utf8');
 const echappe = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;')
   .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
+// Règle studio (29/08/2026) : l'adresse postale de l'éditeur ne paraît QUE sur
+// les documents légaux (mentions légales, confidentialité, conditions,
+// suppression de compte). Nulle part ailleurs, ni en clair (pied) ni en données
+// structurées (JSON-LD). Partout ailleurs on garde la dénomination et le contact.
+const PAGES_LEGALES = new Set(['mentions-legales', 'confidentialite', 'conditions', 'suppression-compte']);
+
 /**
  * Les locales réellement traduites, c'est-à-dire celles qui ont un dossier.
  * Une locale est le triplet pays + langue + juridiction, et non une langue :
@@ -79,13 +85,19 @@ function jsonld(page, langue, meta) {
     url: site.domaine,
     email: e.email,
     telephone: e.telephone,
-    address: {
-      '@type': 'PostalAddress',
-      streetAddress: e.rue,
-      postalCode: e.codePostal,
-      addressLocality: e.ville,
-      addressCountry: e.pays,
-    },
+    // Adresse postale réservée aux documents légaux (règle studio) : ailleurs,
+    // même en données structurées, on ne l'expose pas.
+    ...(PAGES_LEGALES.has(page)
+      ? {
+          address: {
+            '@type': 'PostalAddress',
+            streetAddress: e.rue,
+            postalCode: e.codePostal,
+            addressLocality: e.ville,
+            addressCountry: e.pays,
+          },
+        }
+      : {}),
   };
 
   const blocs = [organisation];
@@ -188,18 +200,20 @@ function pied(page, langue) {
     ? `  <nav>\n    ${liens}\n  </nav>`
     : `  <p>${liens.split('\n    ').join(' · ')}</p>`;
 
-  // L'identité complète de l'éditeur est obligatoire, mais elle est déjà sur les
-  // mentions légales et sur le support. Sur l'accueil elle ne fait que refroidir
-  // la page : on n'y laisse que la signature.
-  // La signature nomme la juridiction par substitution, jamais en dur : une
-  // locale ne peut donc pas revendiquer le référentiel d'une autre.
+  // L'adresse postale complète de l'éditeur ne s'affiche QUE sur les documents
+  // légaux (règle studio 29/08/2026 : pas d'adresse ailleurs). Partout ailleurs
+  // on garde la dénomination et le contact, jamais la rue. Sur l'accueil, rien
+  // que la signature. La signature nomme la juridiction par substitution, jamais
+  // en dur : une locale ne peut pas revendiquer le référentiel d'une autre.
   const signature = langue.signature.replace('{{juridiction}}', langue.juridictionNom);
   if (signature.includes('{{')) {
     throw new Error(`Signature de « ${langue.code} » : substitution non résolue.`);
   }
   const identite = page === 'accueil'
     ? `  <p>${echappe(signature)}</p>`
-    : `  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>\n  <a href="mailto:${e.email}">${e.email}</a></p>`;
+    : PAGES_LEGALES.has(page)
+      ? `  <p>${e.denomination}, ${e.rue}, ${e.codePostal} ${e.ville}, ${e.paysNom}<br>\n  <a href="mailto:${e.email}">${e.email}</a></p>`
+      : `  <p>${e.denomination}<br>\n  <a href="mailto:${e.email}">${e.email}</a></p>`;
 
   // Accès web en bas de page : une école qui découvre le site sur ordinateur
   // peut se connecter directement, sans passer par un store. Bouton discret,
