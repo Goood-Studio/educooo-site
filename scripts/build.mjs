@@ -324,6 +324,46 @@ function rendu(page, langue, metas) {
   return propre;
 }
 
+/**
+ * Une page hors catalogue, servie sur une adresse fixe et fabriquée à la main.
+ * Comme la 404, elle ne passe pas par site.pages : elle n'entre donc ni dans la
+ * navigation, ni dans le pied automatique, ni dans le sitemap. Elle reprend le
+ * gabarit complet pour garder tout le SEO de base (canonical, Open Graph,
+ * données structurées) et le même habillage que le reste du site.
+ *
+ * L'indexation se règle par « noindex ». On loge la balise robots dans
+ * l'emplacement {{hreflang}} du gabarit, qui vit dans le <head> et reste vide
+ * pour ces pages sans traductions.
+ */
+function pageSpeciale({ slug, meta, corps, noindex }) {
+  const langue = localesPresentes.find((l) => l.code === site.localeRacine);
+  const remplacements = {
+    lang: langue.hreflang,
+    titre: echappe(meta.titre),
+    description: echappe(meta.description),
+    canonical: `${site.domaine}/${slug}/`,
+    domaine: site.domaine,
+    ogLocale: langue.ogLocale,
+    hreflang: noindex ? '<meta name="robots" content="noindex">' : '',
+    jsonld: jsonld(slug, langue, meta),
+    classeMain: '',
+    entete: entete(slug, langue, meta),
+    corps: liensInternes(corps.trim(), langue),
+    pied: pied(slug, langue),
+  };
+  let html = gabarit;
+  for (const [cle, valeur] of Object.entries(remplacements)) {
+    html = html.replaceAll(`{{${cle}}}`, valeur);
+  }
+  const restants = html.match(/\{\{[a-zA-Z][a-zA-Z0-9:_-]*\}\}/g);
+  if (restants) throw new Error(`Marqueurs non remplacés dans « ${slug} » : ${[...new Set(restants)].join(', ')}`);
+  const propre = sansCadratin(html.replace(/\n{3,}/g, '\n\n'), slug);
+  const dest = join(SORTIE, slug);
+  mkdirSync(dest, { recursive: true });
+  writeFileSync(join(dest, 'index.html'), propre);
+  console.log(`  ${('/' + slug + '/').padEnd(28)} ${String(propre.length).padStart(6)} o${noindex ? '  (noindex)' : ''}`);
+}
+
 // ── Génération ─────────────────────────────────────────────────────────────
 
 rmSync(SORTIE, { recursive: true, force: true });
@@ -384,6 +424,8 @@ for (const langue of localesPresentes) {
     background: #D5CFF3; color: #2b2350; margin: .4rem 0 1rem; }
   #parrainage .badges { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-top: .5rem; }
   #parrainage.plateforme-ios .badge-play, #parrainage.plateforme-android .badge:not(.badge-play) { order: 2; }
+  .copie-etat { font-weight: 700; color: #2b7a4b; }
+  .lien-navigateur { display: inline-block; margin-top: .3rem; }
 </style>
 <script>
   (function () {
@@ -428,16 +470,15 @@ ${liens}
 <header>
   <a class="marque" href="/">Educoo<span>O</span></a>
   <h1>Une collègue t'offre EducooO</h1>
-  <p class="date">Installe l'app et saisis ton code à l'inscription pour tes 5 € de remise.</p>
+  <p class="date">Installe l'app pour tes 5 € de remise. Ton code est déjà prêt, rien à retenir.</p>
 </header>
 <section class="centre">
-  <p>Ton code de parrainage</p>
-  <p><span class="code-parrainage" id="valeur-code">ton code</span></p>
   <div class="badges">
     ${badgeIos}
     ${badgePlay}
   </div>
-  <p class="date">Note ton code : tu le saisiras à la création de ton compte, dans l'app.</p>
+  <p class="date" id="note-app">Ton code <span class="code-parrainage" id="valeur-code">ton code</span> <span id="etat-copie"></span></p>
+  <p class="date">Sur ordinateur ou tablette ? <a class="bouton-connexion lien-navigateur" id="lien-web" href="${site.app.web}">Ouvre EducooO dans ton navigateur</a>. Ton code s'applique tout seul.</p>
 </section>
 </div>
 </main>
@@ -446,6 +487,26 @@ ${liens}
     var code = window.__codeParrainage;
     var el = document.getElementById('valeur-code');
     if (el && code) el.textContent = code;
+    // Le lien navigateur porte le code en paramètre : l'app web le capte et le
+    // rattache tout seul, zéro saisie. C'est le chemin sans friction sur desktop.
+    var lienWeb = document.getElementById('lien-web');
+    if (lienWeb && code) {
+      lienWeb.href = ${JSON.stringify(site.app.web)} + '/?parrain=' + encodeURIComponent(code);
+    }
+    // On copie le code dans le presse-papiers : sur l'app installée (où vit le
+    // paiement, donc la récompense de la marraine), l'inscription propose de le
+    // coller, une friction en moins que la recopie à la main. Best-effort : si
+    // le navigateur refuse, le code reste affiché juste au-dessus.
+    var etat = document.getElementById('etat-copie');
+    if (code && navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(function () {
+        if (etat) { etat.textContent = 'est copié, colle-le à l\\'inscription.'; etat.className = 'copie-etat'; }
+      }).catch(function () {
+        if (etat) etat.textContent = ': saisis-le à l\\'inscription.';
+      });
+    } else if (etat) {
+      etat.textContent = ': saisis-le à l\\'inscription.';
+    }
     var bloc = document.getElementById('parrainage');
     if (bloc && window.__plateforme && window.__plateforme !== 'autre') {
       bloc.className = 'plateforme-' + window.__plateforme;
@@ -457,6 +518,200 @@ ${liens}
 `, '404.html'));
   void metas;
 }
+
+// /manolo : dossier de présentation pour l'administration, dans le cadre d'une
+// demande de labellisation Manolo. Page hors catalogue et NON indexée : on
+// n'expose pas une pièce administrative aux moteurs de recherche. Accessible
+// seulement par l'adresse directe educooo.com/manolo. Rien n'y est affirmé qui
+// ne soit vrai aujourd'hui : le statut est « candidat », jamais « labellisé ».
+pageSpeciale({
+  slug: 'manolo',
+  noindex: true,
+  meta: {
+    titre: 'EducooO · Dossier Manolo',
+    description: "Dossier de présentation d'EducooO pour l'administration, dans le cadre d'une demande de labellisation Manolo. Ancrage FWB, RGPD, égalité, pérennité.",
+    h1: 'Dossier de labellisation Manolo',
+    chapeau: "À l'intention de l'administration de la Fédération Wallonie-Bruxelles.",
+  },
+  corps: `<section>
+<p><strong>EducooO</strong> est une plateforme pédagogique en ligne, disponible sur iOS, sur Android et dans le navigateur, éditée par Goood Studio SRL. Elle s'adresse aux enseignant·es de l'enseignement fondamental de la Fédération Wallonie-Bruxelles, tous réseaux confondus : Wallonie-Bruxelles Enseignement, l'officiel subventionné, le libre confessionnel et le libre non confessionnel.</p>
+<p class="appui">Ce document présente EducooO à l'administration dans le cadre d'une demande de labellisation Manolo. Il en reprend les critères de la Charte de labellisation (arrêté du 2 mai 2019), point par point, sur un ton volontairement factuel.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Ce que fait l'outil</h2>
+  <p>Trois usages pour l'enseignant·e, un seul fil : rendre le temps que la paperasse prend.</p>
+</div>
+
+<div class="trio">
+  <div class="carte">
+    <div class="tuile t-bleu" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M8 2v4"/><path d="M16 2v4"/><path d="M3 8h18"/><path d="M4 6h16v14H4Z"/></svg>
+    </div>
+    <h3>Préparer la classe</h3>
+    <p>Un semainier construit les activités de la semaine et propose des leçons rattachées aux compétences qu'il reste à travailler.</p>
+  </div>
+  <div class="carte">
+    <div class="tuile t-sarcelle" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><path d="M12 19v3"/></svg>
+    </div>
+    <h3>Consigner des observations</h3>
+    <p>L'enseignant·e dicte ou saisit une observation de classe en quelques secondes, sans quitter ses élèves des yeux.</p>
+  </div>
+  <div class="carte">
+    <div class="tuile t-vert" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/></svg>
+    </div>
+    <h3>Suivre les acquis</h3>
+    <p>Chaque observation est rattachée aux attendus du référentiel. Le bilan des acquis des élèves se construit au fil de l'année.</p>
+  </div>
+</div>
+
+<div class="titre-section">
+  <h2>Ancrage dans les référentiels de la Fédération</h2>
+  <p>Le critère central de la Charte, et le cœur de la conception de l'outil.</p>
+</div>
+
+<section class="phare">
+  <p class="phare-titre">Construit sur les référentiels et les socles de compétences de la FWB</p>
+  <p>Les référentiels et les socles de compétences de la Fédération Wallonie-Bruxelles sont pré-chargés dans l'application, avec leurs milliers d'attendus. L'enseignant·e n'encode rien : il ou elle décrit une activité, et l'outil propose les attendus officiels qu'elle travaille, en citant les mots qui justifient chaque proposition.</p>
+  <p>Le rattachement reste une proposition. L'enseignant·e valide, corrige ou refuse. Rien n'est décidé sans lui ou elle, et quand l'outil ne sait pas rattacher, il le dit au lieu d'inventer.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Protection des données des élèves</h2>
+  <p>Une application qui touche à des observations sur des enfants a une dette de clarté.</p>
+</div>
+
+<section>
+<ul class="liste-nue">
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span>Traitement conforme au RGPD, base de données hébergée dans l'Union européenne.</span></li>
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span>Minimisation des données : le nom complet d'un élève n'est jamais enregistré, le prénom et deux lettres du nom suffisent.</span></li>
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span>Masquage des prénoms au moment du traitement automatique, pour que le contenu ne circule pas en clair.</span></li>
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span>Aucune publicité, aucun suivi inter-applications, aucun contenu d'élève utilisé pour entraîner un modèle.</span></li>
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z"/></svg><span>Ni la direction ni les parents n'accèdent aux observations d'un·e enseignant·e. Export et suppression du compte à tout moment.</span></li>
+</ul>
+<p class="appui">Le fonctionnement réel est décrit prestataire par prestataire dans la <a href="{{lien:confidentialite}}">politique de confidentialité</a>. Un accord de sous-traitance écrit est fourni au pouvoir organisateur sur simple demande.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Égalité, non-discrimination et genre</h2>
+  <p>Ce que la Charte demande sur le fond des contenus et de la langue.</p>
+</div>
+
+<div class="trio">
+  <div class="carte">
+    <div class="tuile t-corail" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><path d="M9.5 3a4 4 0 1 0 0 8 4 4 0 0 0 0-8Z"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13A4 4 0 0 1 16 11"/></svg>
+    </div>
+    <h3>Écriture inclusive</h3>
+    <p>L'interface et les contenus sont rédigés en écriture inclusive au point médian. Le féminin employé comme générique est écarté par construction.</p>
+  </div>
+  <div class="carte">
+    <div class="tuile t-jaune" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M3 12s3.5-6 9-6 9 6 9 6-3.5 6-9 6-9-6-9-6Z"/><path d="M12 9.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"/></svg>
+    </div>
+    <h3>Accessibilité</h3>
+    <p>Contrastes soignés, structure lisible, saisie possible à la voix comme au clavier : l'outil s'adapte aux façons de travailler, pas l'inverse.</p>
+  </div>
+  <div class="carte">
+    <div class="tuile t-violet" aria-hidden="true">
+      <svg viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5"/></svg>
+    </div>
+    <h3>Contenus non discriminants</h3>
+    <p>Les contenus générés se tiennent au terrain pédagogique et aux compétences. L'outil ne trie pas les élèves et ne produit rien de discriminant.</p>
+  </div>
+</div>
+
+<div class="titre-section">
+  <h2>Pérennité</h2>
+  <p>Un service qui tient une année scolaire, et les suivantes.</p>
+</div>
+
+<section>
+<ul class="liste-nue">
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Édité par une société établie, Goood Studio SRL, à Namur, en Belgique.</span></li>
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Produit en production, publié sur l'App Store et sur Google Play, et accessible dans le navigateur.</span></li>
+  <li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 6 9 17l-5-5"/></svg><span>Modèle par abonnement, sans publicité ni revente de données, aligné sur la durée du service.</span></li>
+</ul>
+</section>
+
+<div class="titre-section">
+  <h2>Statut de la demande</h2>
+  <p>Dit clairement, pour ne rien laisser croire de plus que ce qui est vrai.</p>
+</div>
+
+<section class="phare">
+  <p class="phare-titre">Candidat à la labellisation Manolo</p>
+  <p>EducooO n'est pas labellisé à ce jour, et n'est pas agréé. Le présent dossier accompagne une demande de labellisation en cours d'instruction. Nous nous tenons à la disposition de l'administration pour tout complément, toute démonstration et toute vérification.</p>
+</section>
+
+<section>
+<h2>Contact</h2>
+<p>Pour instruire ce dossier ou demander une démonstration : <a href="mailto:info@educooo.com">info@educooo.com</a>. Une vraie personne de l'équipe qui construit l'application vous répond.</p>
+</section>
+
+<div class="bandeau">
+  <img src="/assets/img/nuage-salut.webp" alt="" width="300" height="300" loading="lazy">
+  <h2>Voir l'outil en conditions réelles</h2>
+  <p>La page publique présente EducooO tel que les enseignant·es l'utilisent au quotidien.</p>
+  <div class="badges centre-badges badges-bandeau">
+    <a class="bouton" href="{{lien:accueil}}">Découvrir EducooO</a>
+  </div>
+</div>`,
+});
+
+// /gratuit : page publique qui explique, honnêtement, les deux façons d'obtenir
+// EducooO sans le payer de sa poche. Elle peut être indexée. Elle n'entre pas
+// dans le catalogue site.pages pour ne pas apparaître dans la navigation ni dans
+// le pied : c'est une page d'appel, pas une page de structure.
+pageSpeciale({
+  slug: 'gratuit',
+  noindex: false,
+  meta: {
+    titre: 'EducooO gratuit · Deux façons de ne rien payer',
+    description: "Deux chemins honnêtes pour obtenir EducooO sans que ça te coûte : le budget numérique Manolo de ton école, ou le parrainage de six collègues.",
+    h1: 'Obtiens EducooO gratuitement',
+    chapeau: 'Deux chemins honnêtes pour que ton année ne te coûte rien.',
+  },
+  corps: `<section>
+<p>EducooO coûte 59,99 € par an, tout compris. Il y a deux façons parfaitement honnêtes de ne pas le payer de ta poche. Aucune des deux n'est un tour de passe-passe : voici exactement comment elles marchent, et où elles en sont.</p>
+</section>
+
+<div class="titre-section">
+  <h2>Deux chemins</h2>
+  <p>L'un passe par ton école, l'autre par tes collègues. Tu peux tenter les deux.</p>
+</div>
+
+<div class="duo-cartes">
+<section class="phare">
+  <p class="sur-titre">Chemin 1</p>
+  <p class="phare-titre">Par le budget Manolo de ton école</p>
+  <p>Manolo est le budget numérique de la Fédération Wallonie-Bruxelles. C'est une dotation versée aux <strong>écoles</strong>, pas directement aux enseignant·es. C'est donc l'école qui décide de ce qu'elle finance avec, et un abonnement comme EducooO peut être pris en charge sur ce budget.</p>
+  <p><strong>Le geste concret :</strong> en parler à ta direction, et lui proposer d'inscrire EducooO dans les dépenses numériques de l'établissement. C'est elle qui tient les cordons de la bourse Manolo.</p>
+  <p class="appui">En toute transparence : <strong>EducooO est en cours de validation pour la labellisation Manolo</strong>. Nous ne pouvons donc pas affirmer aujourd'hui que l'abonnement est déjà remboursable au titre du label. La prise en charge par l'école sur son budget reste possible, la labellisation est une démarche en cours.</p>
+</section>
+
+<section class="phare">
+  <p class="sur-titre">Chemin 2</p>
+  <p class="phare-titre">En parrainant six collègues</p>
+  <p>EducooO a un parrainage. Chaque collègue qui s'abonne grâce à ton code te rapporte <strong>10 €</strong>. Fais le calcul : <strong>six collègues abonné·es, c'est environ 60 €</strong>, soit ton année remboursée.</p>
+  <p>Et tu n'es pas la seule personne à y gagner : la collègue que tu parraines démarre avec une remise de bienvenue. Tout le monde avance.</p>
+  <p class="appui">Le versement de la manne du parrainage se met en place en ce moment. Le principe est acté et le compteur tourne : garde tes filleul·es sous la main, tout est prêt côté app.</p>
+</section>
+</div>
+
+<div class="bandeau" id="telecharger">
+  <img src="/assets/img/nuage-celebration.webp" alt="" width="300" height="300" loading="lazy">
+  <h2>Commence par installer l'app</h2>
+  <p>Le premier mois est offert, sans carte bancaire. Tu verras si ça te fait gagner du temps avant même de parler budget ou parrainage.</p>
+  <div class="badges centre-badges badges-bandeau">
+    <a class="badge" href="{{app:ios}}"><img src="/assets/img/badge-app-store.svg" alt="Télécharger dans l'App Store" width="127" height="40" loading="lazy"></a>
+    <a class="badge badge-play" href="{{app:android}}"><img src="/assets/img/badge-google-play.png" alt="Disponible sur Google Play" width="135" height="52" loading="lazy"></a>
+  </div>
+  <span class="mention">Sur ordinateur ou tablette ? Tu peux aussi <a href="{{app:web}}">te connecter directement dans ton navigateur</a>.</span>
+</div>`,
+});
 
 // sitemap.xml : toutes les locales, avec leurs alternates. Même règle que les
 // balises du <head> : une page n'a d'alternates que dans sa propre juridiction.
