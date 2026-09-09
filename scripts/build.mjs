@@ -182,6 +182,9 @@ function pied(page, langue) {
     ...Object.entries(langue.pied)
       .filter(([p]) => !(page === 'accueil' && p === 'accueil'))
       .map(([p, libelle]) => `<a href="${chemin(langue, p)}">${echappe(libelle)}</a>`),
+    // Section Guides (autonome dans public/, hors catalogue) : lien direct, sur les
+    // locales FR seulement tant que les guides ne sont écrits qu'en français.
+    ...((langue.hreflang || '').startsWith('fr') ? ['<a href="/guides/">Guides</a>'] : []),
   ].join('\n    ');
 
   // Même juridiction seulement : proposer une autre juridiction ferait croire à
@@ -740,9 +743,21 @@ const entrees = urls.map(({ url, page, langue }) => {
   return `  <url>\n    <loc>${url}</loc>${alt}\n    <priority>${priorite}</priority>\n  </url>`;
 }).join('\n');
 
+// Guides : section autonome (public/guides), hors catalogue. On lit l'index
+// généré (déjà copié dans dist) pour les faire figurer au sitemap. Découplé :
+// si aucun guide publié, rien n'est ajouté.
+let guidesEntrees = '';
+try {
+  const idx = JSON.parse(readFileSync(join(SORTIE, 'guides', 'index.json'), 'utf8'));
+  const cheminsGuides = ['/guides/', ...idx.map((g) => `/guides/${g.slug}/`)];
+  guidesEntrees = '\n' + cheminsGuides
+    .map((u) => `  <url>\n    <loc>${site.domaine}${u}</loc>\n    <priority>0.7</priority>\n  </url>`)
+    .join('\n');
+} catch { /* pas encore de guides publiés */ }
+
 writeFileSync(join(SORTIE, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
-${entrees}
+${entrees}${guidesEntrees}
 </urlset>
 `);
 
