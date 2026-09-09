@@ -1,0 +1,67 @@
+name: Générer les Guides (Notion)
+
+# Autonomie : régénère la section /guides/ depuis la base Notion et déploie.
+# - Rafraîchit la copie (le produit évolue vite).
+# - Applique l'automate d'état : un guide passé en "À publier" dans Notion est
+#   publié puis repassé "Publié" automatiquement.
+# Tourne sans Mac ni serveur. NOTION_TOKEN = secret du repo.
+on:
+  schedule:
+    - cron: '0 5,17 * * *'   # deux fois par jour (UTC) : attrape les "À publier"
+  workflow_dispatch:          # + déclenchement manuel immédiat
+
+permissions:
+  contents: write   # committer public/guides régénéré
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  generer-et-publier:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deploiement.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Générer les guides depuis Notion
+        env:
+          NOTION_TOKEN: ${{ secrets.NOTION_TOKEN }}
+        run: node scripts/generer-guides.mjs
+
+      - name: Committer les guides régénérés (si changement)
+        run: |
+          git config user.name "educooo-bot"
+          git config user.email "bot@educooo.com"
+          git add public/guides public/assets/img/guides
+          if git diff --cached --quiet; then
+            echo "Aucun changement de guide."
+          else
+            git commit -m "chore(guides): régénération auto depuis Notion [skip ci]"
+            git push
+          fi
+
+      - name: Construire le site
+        run: node scripts/build.mjs
+
+      - name: Vérifier les pages exigées par les stores
+        run: |
+          for page in confidentialite conditions suppression-compte support mentions-legales; do
+            test -s "dist/$page/index.html" || { echo "MANQUANT : dist/$page/index.html"; exit 1; }
+          done
+          test -s dist/index.html && test -s dist/sitemap.xml && test -s dist/CNAME
+          test -s dist/guides/index.html || { echo "MANQUANT : dist/guides/index.html"; exit 1; }
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deploiement
+        uses: actions/deploy-pages@v4
