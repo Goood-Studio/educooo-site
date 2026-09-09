@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Guides EducooO · Trouve comment faire</title>
+<meta name="description" content="Tous les guides EducooO. Cherche en deux mots comment faire ce que tu veux.">
+<link rel="canonical" href="https://educooo.com/guides/">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Guides EducooO · Trouve comment faire">
+<meta property="og:description" content="Tous les guides EducooO. Cherche en deux mots comment faire ce que tu veux.">
+<meta property="og:image" content="https://educooo.com/assets/img/og.png">
+<meta name="theme-color" content="#F1F0F6">
+<link rel="icon" href="/assets/img/favicon.ico" sizes="any">
+<link rel="stylesheet" href="/style.css">
+<link rel="stylesheet" href="/guides/guides.css">
+</head>
+<body>
+<main class="document">
+<header>
+  <a class="marque" href="/">Educoo<span>O</span></a>
+  <h1>Guides</h1>
+  <p class="date">Trouve en deux mots comment faire ce que tu cherches.</p>
+</header>
+<div class="recherche">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+  <input id="q" type="search" autocomplete="off" placeholder="Cherche : séquence, clôture, absence, photo, référentiel…" aria-label="Rechercher un guide">
+</div>
+<p class="compte" id="compte"></p>
+<div class="g-liste" id="liste"></div>
+<p class="vide" id="vide" hidden>Aucun guide ne correspond. Essaie un autre mot, ou écris-nous : info@educooo.com.</p>
+<script>
+const GUIDES = [{"slug":"lecon-en-plusieurs-cours","titre":"Comment créer une leçon en plusieurs étapes (une séquence)","accroche":"Ta leçon revient sur plusieurs cours ? Voici comment la suivre d'un bout à l'autre, sans la recopier ni perdre le fil.","public":"Primaire","mots":"séquence, plusieurs cours, plusieurs séances, leçon longue, cahier journal, étapes, découverte, manipulation, entraînement, évaluation formative, évaluation sommative, préparation, primaire, suivi de leçon, étape suivante, Bloom"}];
+const norm = s => (s||"").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"");
+const liste=document.getElementById("liste"),compte=document.getElementById("compte"),vide=document.getElementById("vide"),q=document.getElementById("q");
+const tagClass=p=>p==="Maternelle"?"mat":p==="Primaire"?"pri":"";
+function surligne(t,m){let o=t;for(const w of m){if(w.length<2)continue;o=o.replace(new RegExp("("+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+")","gi"),"<mark>$1</mark>");}return o;}
+function rendre(){
+  const brut=q.value.trim();
+  const termes=norm(brut).split(/\s+/).filter(Boolean);
+  const res=GUIDES.filter(g=>{const foin=norm([g.titre,g.accroche,g.mots,g.public].join(" "));return termes.every(t=>foin.includes(t));});
+  liste.innerHTML=res.map(g=>'<a class="g-carte" href="/guides/'+g.slug+'/"><h3>'+surligne(g.titre,termes)+'</h3><p>'+surligne(g.accroche||"",termes)+'</p><span class="g-tag '+tagClass(g.public)+'">'+g.public+'</span></a>').join("");
+  compte.textContent=brut?res.length+" guide"+(res.length>1?"s":"")+" pour « "+brut+" »":GUIDES.length+" guides";
+  vide.hidden=res.length>0;
+}
+q.addEventListener("input",rendre);rendre();
+</script>
+</main>
+</body>
+</html>
