@@ -67,9 +67,17 @@ img { max-width: 100%; height: auto; }
   display: flex; align-items: center; justify-content: space-between;
   gap: 16px; margin-bottom: 40px; flex-wrap: wrap;
 }
-.barre nav { display: flex; gap: 20px; font-size: 15px; }
+.barre nav { display: flex; align-items: center; gap: 20px; font-size: 15px; }
 .barre nav a { color: var(--encre-douce); text-decoration: none; }
 .barre nav a:hover { color: var(--encre); }
+/* Connexion et Télécharger vivent maintenant dans le menu, à la fin des ancres.
+   Sur ordinateur ils gardent leur allure de boutons ; le petit décalage à gauche
+   les détache des liens d'ancre. */
+.barre nav .barre-actions { margin-left: 6px; }
+/* Les boutons sont des <a> dans le nav : on empêche le survol des liens d'ancre
+   d'écraser leur couleur propre (blanc sur le CTA plein). */
+.barre nav .bouton-barre, .barre nav .bouton-barre:hover { color: #fff; }
+.barre nav .bouton-connexion:hover { color: var(--encre); }
 
 .signature { height: 34px; width: auto; display: block; }
 
@@ -622,8 +630,18 @@ h1, h2, h3, .phare-titre { text-wrap: balance; }
     background: var(--surface); border: 1px solid var(--bord);
     border-radius: 16px; padding: 8px; box-shadow: var(--ombre);
   }
-  .bascule-menu:checked ~ nav a {
+  .bascule-menu:checked ~ nav > a {
     padding: 12px 14px; border-radius: 10px; font-size: 16px; color: var(--encre);
   }
-  .bascule-menu:checked ~ nav a + a { border-top: 1px solid var(--bord); }
+  .bascule-menu:checked ~ nav > a + a { border-top: 1px solid var(--bord); }
+  /* Connexion et Télécharger ferment le menu : rangée pleine largeur, boutons
+     empilés et centrés, détachés des ancres par un filet. */
+  .bascule-menu:checked ~ nav .barre-actions {
+    flex-direction: column; align-items: stretch; gap: 8px; width: 100%;
+    margin-top: 10px; padding-top: 12px; border-top: 1px solid var(--bord);
+  }
+  .bascule-menu:checked ~ nav .barre-actions .bouton-connexion,
+  .bascule-menu:checked ~ nav .barre-actions .bouton-barre {
+    text-align: center; font-size: 16px; padding: 12px 14px;
+  }
 }

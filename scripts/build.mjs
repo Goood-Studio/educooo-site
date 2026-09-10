@@ -145,9 +145,18 @@ function entete(page, langue, meta) {
     const liens = langue.barre.liens
       .map((l) => `    <a href="${l.ancre}">${echappe(l.libelle)}</a>`)
       .join('\n');
-    // Le menu se replie derrière un bouton sur téléphone. La bascule est une
-    // case à cocher masquée plutôt qu'un <details> : le comportement est
-    // déterministe dans tous les navigateurs, et le site reste sans JavaScript.
+    // Connexion et Télécharger vivent DANS le menu, aux côtés des ancres, et non
+    // plus dans une rangée de boutons à part. Le hero et la barre collante du bas
+    // portent déjà les deux boutons de store : un second jeu d'actions dans l'en-
+    // tête faisait déborder la barre sur deux lignes au téléphone. Sur ordinateur
+    // le menu reste déplié en ligne ; sur téléphone il se range derrière le burger.
+    // La bascule est une case à cocher masquée plutôt qu'un <details> : le
+    // comportement est déterministe dans tous les navigateurs, et le site reste
+    // sans JavaScript.
+    const actions = `<div class="barre-actions">${site.app.web && langue.barre.connexion ? `
+      <a class="bouton-connexion" href="${site.app.web}">${echappe(langue.barre.connexion)}</a>` : ''}
+      <a class="bouton-barre" href="#telecharger">${echappe(langue.barre.cta)}</a>
+    </div>`;
     return `<div class="barre">
   <a class="marque" href="${accueil}" aria-label="${echappe(langue.retourAccueil)}">
     <img class="signature" src="/assets/img/signature.svg" alt="EducooO" width="150" height="34">
@@ -156,11 +165,8 @@ function entete(page, langue, meta) {
   <label class="burger" for="bascule-menu" aria-hidden="true"><span></span><span></span><span></span></label>
   <nav>
 ${liens}
+    ${actions}
   </nav>
-  <div class="barre-actions">${site.app.web && langue.barre.connexion ? `
-    <a class="bouton-connexion" href="${site.app.web}">${echappe(langue.barre.connexion)}</a>` : ''}
-    <a class="bouton-barre" href="#telecharger">${echappe(langue.barre.cta)}</a>
-  </div>
 </div>`;
   }
   const chapeau = meta.chapeau ? `\n  <p class="date">${meta.chapeau}</p>` : '';
